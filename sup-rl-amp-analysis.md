@@ -22,7 +22,9 @@ go along.
 
 Before I can experiment with overseer failure, I need to adapt the supervised
 learning system from [@CSASupAmp] to reinforcement learning and evaluate the
-result on the original tasks from the article.
+result on the original tasks from the article. I see three major areas of work:
+overhaul the learning mechanism, find a good way to determine rewards, and
+update $H$ to return evaluations instead of answers.
 
 In the following I assume that you are familiar with [@CSASupAmp]. \textsc{oq}
 stands for *open question*.
