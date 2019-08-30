@@ -80,7 +80,7 @@ for \task{shortest path}. In these cases the evaluation scripts might become
 
 - \OQ Choosing between two answers as in [@StuhDelCog] wouldn't work well here. Or
   would it? \zkref{Z22a1b1} \zkref{Z22a1b1a} Why do they do it?
-- \TODO Get a general idea about how reward are determined in RL.
+- \TODO Get a general idea about how rewards are determined in RL.
   \zkref{Z22a1b2}
 - \TODO Read again about ‘reward engineering’ [@ChriREngP].
 
