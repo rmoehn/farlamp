@@ -115,7 +115,7 @@ Example transcript:
 Given this permutation:
 
 \begin{tabular}{l|llllllll}
-$n$ & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
+$n$         & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 \\
 $\sigma(n)$ & 1 & 0 & 6 & 2 & 3 & 5 & 4 & 7 \\
 \end{tabular}
 
@@ -183,8 +183,8 @@ on them.
 
 # Required learning
 
-\TODO I will have to learn a lot in order to understand the architecture (cf.
-[@CSASupAmp{sec. 2.5}]).
+\TODO I will have to learn a lot in order to understand the architecture
+described in [@CSASupAmp{sec. 2.5}].
 
 - autoregressive models (not sure if this is required with RL)
 - Transformer architecture (encoder-decoder, self-attention)
