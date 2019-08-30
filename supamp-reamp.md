@@ -64,6 +64,8 @@ ask primitive questions, because they don't depend on $X$.
 - \OQ Does $H$ always decompose a question? Or does it sometimes evaluate
   higher-level questions directly as well? Eg. ‘What is $\sigma^2(5)$?’.
 - \OQ How does pretraining work? How do I have to adapt it?
+- \OQ In process 3, is it useful to take one question and do multiple rounds of
+  answer-evaluation?
 - \TODO Read what Paul has written about RL-based IDA.
 
 
@@ -160,6 +162,11 @@ Or does $H$ blindly rely on the sub-answers and the occasional $k < 4$ ensures
 that the training slowly moves in the right direction? I don't think this would
 work, either.
 
+Maybe when $X$ is in execution mode and unsure about the correct answer, it can
+return ‘don't know’. Only in learning mode does it propose numbers, because its
+exploration parameter is turned up. Looks like I have to brush up on my
+reinforcement learning knowledge.
+
 Question: Could we get a better training signal if I ask for all the
 intermediate results and make the reward the number of correct mappings? Answer:
 Maybe, but then I prevent the learning of more efficient representations.
@@ -191,3 +198,4 @@ described in [@CSASupAmp{sec. 2.5}].
 - embeddings and linear projection
 - more about neural nets in general
 - pointer networks
+- more about reinforcement learning
