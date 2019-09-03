@@ -17,8 +17,47 @@
 
 What are the core points that I need to lay out?
 
-- depth of 
+Overview:
+- assumes having read ChriRelAmp
+    - I use terminology from there.
+- context, problem, response
+- So what?
 
+- deterministic and non-deterministic failure
+- implicit and explicit tree/distilled and undistilled amplification
+- difference between decomposing the question and decomposing the evaluation
+- height of a question – related to CSASupAmp
+- definition of overseer failure and overall failure
+- relationship between height and overall failure
+
+- incomplete model for when overall failure rate goes up or down
+    - IL is part of SL, I guess. When do we consider something IL?
+    - \cite[sec. 1.1]{CSASupAmp} considers their system non-IL.
+    - IL/SL might have to do something with the loss function.
+    - ‘We train on each (Q, A) pair about 10 times before removing it from the
+    dataset.’ – \cite[footnote 3]{CSASupAmp}
+- Based on my shallow understanding of ML. Please be merciless in pointing out
+mistakes.
+
+- CSASupAmp as a basis for experiments
+    - what/how to measure
+- How to implement failure.
+
+% - Apparently I'm not writing this just for myself, because then some bullet
+% points would be fine. What is the purpose, then?
+%     - My subconscious target audience is people on the Alignment Forum. I want
+%     them to read this and tell me what doesn't make sense.
+%     - The purpose is to have something that shows Paul that my work is worth
+%     being funded.
+%     - So I could write it just for Paul. Which would mean more shared
+%     understanding.
+%     - But when is my work worth being funded? When it is a useful input for
+%     other researchers, not just Paul.
+%     - So it makes sense to produce something that *is* useful input for other
+%     researchers.
+
+- Essentially I lay out everything roughly. And then I write it more finely. And
+then I pin down the details.
 
 \textcite{ChriRelAmp} describes how capability amplification can lower
 reliability exponentially. He introduces reliability amplification as a counter
@@ -79,43 +118,14 @@ supamp-reamp tasks.
 - Introduce failures to SupAmp and ReAmp. Compare accuracy over training time
 and final accuracy with various failure probabilities.
 
-TODO: Define the \emph{depth of a task}.
-
-\begin{def}{Depth of a question}
-Primitive questions have depth 0.
-A question has depth $n$ if $H$ evaluates it using sub-questions of depth $n-1$
-    or decomposes it into sub-questions of depth $n-1$.
-\end{def}
-
-\begin{example}
-    The decomposition rule for \task{permutation powering} from \textcite[table
-    3]{CSASupAmp} is:
-    \begin{equation}
-        \sigma^{2k}(x) &= \sigma^k(\sigma^k(x)) \\
-        \sigma^{2k+1}(x) &= \sigma(\sigma^k(\sigma^k(x)))
-    \end{equation}
-
-    \begin{itemize}
-        \item ‘What is $\sigma(4)$?’, has depth 0, because it is a primitive
-            question.
-        \item ‘What is $\sigma^2(4)$?’, has depth 1, because $H$ decomposes it
-            into ‘What is $\sigma(4)$?’ and ‘What is $\sigma(\left<\text{answer
-            to the first sub-question}\right>)$, which are primitive questions
-            (depth 0).
-        \item ‘What is $\sigma^3(4)$?’, has depth 1.
-        \item ‘What is $\sigma^4(4)$?’, has depth 2.
-        \item ‘What is $\sigma^8(4)$?’, has depth 3.
-    \end{itemize}
-\end{example}
-
-- Why am I talking about depth? Because the greater the depth, the more
+- Why am I talking about height? Because the greater the height, the more
 correctly learned sub-answers it depends on.
 
 Predictions based on ChriReAmp:
 - Overall failure rate higher the deeper the task.
 - Overall failure rate stays the same or goes down the deeper the task.
 - Or for both there is a $p_T$ such that if $p_f \geqq p_T$ the failure rate
-goes up with depth and below that it stays the same or goes down. And the $p_T$
+goes up with height and below that it stays the same or goes down. And the $p_T$
 of SupAmp is smaller than that of $ReAmp$.
 
 \OQ Can we model this? Put numbers on the predictions? Or just make the
@@ -146,7 +156,237 @@ actually blows up.
     - What impact do failures have on the learning performance with RL?
 
 
+\section{Introduction}
+
+context:
+- Capability amplification can cause the failure rate to blow up.
+- To fix this, use reliability amplification.
+- RelAmp requires extra design work and multiplies computational cost.
+- RL might produce reliable agents without reliability amplification. Could
+avoid the extra cost.
+
+problem:
+- Don't know whether RL will increase reliability sufficiently. In high-stakes
+situations it needs to be very high. \cite[Cf.][]{ChriLearnCata}.
+
+response:
+- Find out how introducing overseer failure to the scheme from CSASupAmp
+increases overall failure rate.
+
+- In this analysis I lay out my current understanding of the concepts and what I
+need to do.
+
+
+\section{Concepts}
+
+TODO: Outline where I want to go so that the reader knows why I'm introducing
+these concepts.
+
+
+\subsection{Failure}
+
+- Overseer produces a wrong response. In SupAmp this would be a wrong answer to
+a question. In ReAmp it would be an inappropriate reward given to $X$ for an
+answer that it proposed.
+
+
+\subsection{Deterministic and non-deterministic failure}
+
+- Overseer can behave deterministically, ie. has the same output for the same
+input.
+- Or non-deterministically, ie. for any input it fails with small probability.
+- ChriRelAmp models a sometimes-failing overseer as drawing policies from a
+distribution of policies and some of them are foul.
+- The question is: Do we draw a new policy for every question or do we use one
+for the whole training?
+- The deterministic case seems more realistic to me.
+    - Altough at Ought they have many overseers who don't always give the same
+    response, because they are humans.
+- But then reliability depends heavily on how good the learner is at learning
+correct concepts rather than memorizing answers.
+- Is this why ReAmp is expected to be reliable and SupAmp not?
+- But the non-deterministic case seems too easy. – A single failure of the
+overseer would be cancelled out by further correct training data. Or maybe not.
+– ‘We train on each (Q, A) pair about 10 times before removing it from the
+dataset.’ \parencite[footnote 3]{CSASupAmp} Maybe this burns in the wrong value.
+We could train fewer times and that would slow down training. In RL the
+repetition is different: X proposes various answers and H rates them.
+- Also, we have the $H'$, which learns H's behaviour. I would expect a learned
+policy to be deterministic, even if H is non-deterministic. But this is more
+specific to the CSASupAmp system. In other systems we might consult H directly.
+
+TODO: Later bring it into the form of an argument and mark the open questions.
+
+
+\subsection{Trees and distillation}
+
+When thinking about IDA I find it useful to think of a tree of questions. This
+is not my invention, but since the tree is normally implicit,
+
+If we remove distillation from iterated distillation and amplification.
+
+…… – Is this section necessary?
+
+
+\subsection{Decomposing questions, decomposing evaluations}
+
+In SupAmp the overseer decomposes a questions into sub-questions and then uses
+the sub-answers to answer the question. In ReAmp the agent $X$ receives a
+question and proposes an answer. Then the overseer must respond to the
+implicit question: ‘What reward do I need to give to $X$ in order to make it
+give correct answers in the future?’
+- Asks sub-questions and uses the sub-answers to determine the reward. Usually
+those sub-questions are used to find out whether $X$'s proposed answer was
+correct.
+
+
+\subsection{Height of a question}
+
+- The term ‘height’ comes from the fact that questions are answered using an
+implicit tree of sub-questions.
+- If the overseer wants to find $a = \sigma^4(7)$, it decomposes it into $a_1 =
+\sigma^2(7)$ and $a = \sigma^2(a_1)$. In order to get correct answers, $X$ has
+to have learned them before. So at some point the overseer must have found $a =
+\sigma^2(7)$ and decomposed it into $a_1 = \sigma(7)$ and $a = \sigma(a_1)$.
+- So there is a tree rooted in the question, ‘What is $\sigma^4(7)$?’ and whose
+leaves are primitive questions.
+- The whole tree is never explicit, because $H$ decomposes only the root
+question and $X$ is expected to have learned the answers to the sub-questions.
+- But we can't train all possible questions and answers, right? The learner has
+to generalize from a limited set.
+
+- The number of nodes in the tree grows exponentially with the height of the
+tree, assuming that $H$ decomposes every question into at least two
+sub-questions.
+- This means that the overall failure probably grows exponentially with the
+height of the tree, if one wrong sub-answer anywhere in the tree entails a wrong
+root answer.
+- Two quibbles: errors can cancel each other out. I suspect this is improbable
+enough to not be able to compete with the exponential growth. This reasoning is
+based on an explicit tree.
+- With an implicit tree the learning algorithm stands between the overseer
+failure and the overall failure.
+- If at each root question $q$ with height $h(q)$ $X$ returns correct
+sub-answers to the sub-questions $q_i$ despite the training input for these
+lower-than-$h(q)$ questions being wrong sometimes, the overall failure
+probability is just the overseer's failure probability.
+- If, however, $X$ adopts $H$'s failures, the failures compound.
+
+\begin{def}{Height of a question} By recursion:
+    \begin{enumerate}
+    \item Primitive questions have height 0.
+    \item A question has height $n$ if $H$ evaluates it using sub-questions of
+        height $n-1$ or decomposes it into sub-questions of height $n-1$.
+    \end{enumerate}
+\end{def}
+
+\begin{example}
+    The decomposition rule for \task{permutation powering} from \textcite[table
+    3]{CSASupAmp} is:
+    \begin{equation}
+        \sigma^{2k}(x) &= \sigma^k(\sigma^k(x)) \\
+        \sigma^{2k+1}(x) &= \sigma(\sigma^k(\sigma^k(x)))
+    \end{equation}
+
+    \begin{itemize}
+        \item ‘What is $\sigma(4)$?’, has height 0, because it is a primitive
+            question.
+        \item ‘What is $\sigma^2(4)$?’, has height 1, because $H$ decomposes it
+            into ‘What is $\sigma(4)$?’ and ‘What is $\sigma(\left<\text{answer
+            to the first sub-question}\right>)$, which are primitive questions
+            (height 0).
+        \item ‘What is $\sigma^3(4)$?’, has height 1.
+        \item ‘What is $\sigma^4(4)$?’, has height 2.
+        \item ‘What is $\sigma^8(4)$?’, has height 3.
+    \end{itemize}
+\end{example}
+
+- Now, how apt is a learning algorithm to adopt $H$'s failures?
+- This depends on the training, on whether $H$ is deterministic, on how the
+training algorithm for $X$ handles outliers and probably other factors as well.
+- Intuitively (I'm relatively new to this field, so my intuitions are not
+reliable \parencite{Kahneman}), how few examples the learning algorithm needs to
+generalize doesn't say anything about how vulnerable it is to overseer failure.
+- The fewer examples the learner needs to answer all $σ^2$ questions correctly,
+the lower the probability that it will hit a wrong answer from $H$. But if it
+hits the wrong answer, this wrong answer has a greater influence on what the
+learner thinks the questions are about. In the extreme, suppose it needs only
+one example to learn all $σ^2$ answers. Then the chance of hitting a wrong
+answer from $H$ is only $\frac{1}{N}$. However, if it hits this wrong answer, it
+will learn wrong answers to all the other questions as well.
+
+- The $H$ → $H'$ makes the overseer deterministic. But we might inject the
+failures in the output of $H'$, not $H$, which would allow non-determinism.
+- Actually it isn't completely deterministic. $H'$ keeps changing as the
+training goes on. So responses to the same inputs might change, too.
+
+- \textcite{CSASump} trains $X$ ten times on each $(q, a)$ pair for each sampled
+question $q$. I expect wrong answers to be adopted quickly this way.
+- If we lower this number, …
+
+- Okay, which factors do I see influencing the overall failure rate?
+    - overseer deterministic or not
+    - mode of repetition
+        – in SupAmp only matters for non-deterministic overseer
+        - one (Q, A
+        - Does it actually matter? Repetition happens for all answers equally.
+        For right ones as well as wrong ones.
+    - how the learning algo handles outliers – depends on how well it learns
+    concepts vs. being a lookup table
+
+- Looks like I know too little to make a prediction about the middle factor.
+- Let's concentrate on the first and last and keep it simple.
+
+- If the learner acts like a lookup table and the overseer is deterministic, the
+learner quickly adopts the deterministically wrong answers. If the overseer is
+non-deterministic, the learner will adopt fewer wrong answers.
+- If the learner is good at recognizing concepts/weakly influenced by outliers,
+the few times the sampling hits an input that causes $H$ to fail won't influence
+the learner much.
+    - This might be related to regularization. An agent that is highly
+    regularized can only build small concepts and will therefore discard
+    labels/rewards that don't fit.
+- If $H$ fails nondeterministically, the task is easier. For any input $x$, the
+few times a wrong label/reward pushes the output in the wrong direction, there
+will be many more times (statistically) when the label/reward is correct and
+pushes the output in the right direction.
+
+- Is this the essential difference: In SL we have one question, one answer.
+Suppose we have only one question and answer overall. If H gets the answer
+wrong, it will be wrong. If H has 1 \% failure probability, the probability of
+the answer being wrong is 1 \%.
+- In RL it's the learner that proposes answers. Suppose for that question it
+proposes ten answers and H evaluates them. If H has 1 \% failure probability,
+we have roughly 10 \% probability that one of the rewards will be wrong. But one
+reward being wrong doesn't mean that the whole will be wrong.
+- This is not a fair comparison, though. – How many rewards does the learner
+need to give the right answer? And how many wrong rewards are among them? And
+how does that change the overall result?
+
+- What was Paul's reason why RL would do better? Because one wrong reward will
+only change the value function a little bit in the wrong direction.
+- How is it with SL? One wrong label will also only change it a little bit.
+
+- Does the random sampling make up for $H$'s determinism? Only when the task is
+large, so that one input is unlikely to be sampled twice. When the task is
+small, a failure-causing input will be sampled repeatedly and therefore the
+learner be hammered with incorrect input.
+
+- If it acts like a lookup table, it will have bad performance, because it needs
+to learn the answers to every possible question. Since the questions are
+combinatorial, this is impossible.
+
+→ I tried to come to some conclusions about when or why RL or SL will be more or
+less robust. But all feathered out into questions to which I have no answers and
+explorations that might be nonsense. Proving my lack of knowledge about SL and
+RL.
+
+Da steh’ ich nun, ich armer Thor!
+Und bin so klug als wie zuvor;
+-- https://de.wikipedia.org/wiki/Liste_gefl%C3%BCgelter_Worte/D#Da_steh_ich_nun,_ich_armer_Tor!_Und_bin_so_klug_als_wie_zuvor
+
+– I haven't studied as hard as Faust, but I've written down my thoughts in
+thousands of words and everytime I thought I had grasped a rope to pull on, it
+turned into tangle of wool.
 
 \printbibliography
-
-\end{document}
