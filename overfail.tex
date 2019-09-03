@@ -1,0 +1,152 @@
+\documentclass{farlamp}
+
+% latexmk -pdfxe -bibtex -interaction=nonstopmode -outdir=build overfail.tex
+
+\addbibresource{references.bib}
+
+\title{TBR Analysis: How to model overseer failures in ReAmp?}
+\author{Richard Möhn}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\section{Overview}
+
+What are the core points that I need to lay out?
+
+- depth of 
+
+
+\textcite{ChriRelAmp} describes how capability amplification can lower
+reliability exponentially. He introduces reliability amplification as a counter
+measure that can increase reliability as much as we need. And he says that it is
+necessary when we distill an amplified agent using imitation learning (IL), but
+it might not be necessary with reinforcement learning (RL). It doesn't say
+anything about supervised learning (SL).
+
+The key appears to be how quickly the learning agent adopts the overseer's
+direction. If the overseer makes a mistake, the agent immediately adopts the
+wrong answer and then the overseer uses that agent as an assistant to answer
+deeper questions, the deeper questions will acquire the compounded incorrectness
+probability of the answers they're based on. If, in contrast, the overseer makes
+a mistake, the agent only changes a little, and later the overseer provides the
+correct response, then it will override the earlier mistake. But only if the
+failure probability isn't so high that the agent pushes the slight wrongness
+further and further towards the abyss.
+
+So my expectation is: the greater the adoption speed, the lower the overseer
+failure probability that causes an exponential increase in overall failure
+probability.
+
+Conversely, this would mean that the slower the learner (ie. the more often we
+have to hammer it to get the right response), the more opportunities are there
+for the overseer to override an earlier mistake. However, there must be more
+differences between IL, SL and RL than how quickly they pick up on the overseers
+direction. For example, I would expect RL to be able to handle new situations
+better than SL or IL. I'm lacking understanding here.
+
+- TODO: Set the context with statements from ChriRelAmp.
+- In these mathematical tasks, a wrong sub-answer will indeed most likely lead
+to a wrong root answer.
+- So what?
+    - Tells us whether CapAmp+RL is enough or if we need to devote time to
+    designing a mechanism for RelAmp.
+
+- \OQ With supervised learning one wrong label also won't push $X$ to return
+wrong results all the time. As long as $H$ fails non-deterministically, correct
+answers might cancel out earlier and later failures.
+
+- \OQ Does $H$ fail deterministically, ie. same failure for same inputs? Or is
+it random? If it does fail deterministically, does $X$ still learn the correct
+response? How capable does an ML system have to be to correct overseer mistakes?
+Might be a question of regularization.
+
+
+\section{Hypothesis and experiments}
+
+There are two things to measure, learning performance and failure rate compared
+to ground truth. I assume that \textcite{CSASupAmp} obtain the ground truth with
+efficient programs that can solve the tasks.
+
+I would first introduce failures to SupAmp and see if the overall failure rate
+actually blows up. Then I would a
+
+- Will have accuracy-over-training-time and final accuracy data from the
+supamp-reamp tasks.
+- Introduce failures to SupAmp and ReAmp. Compare accuracy over training time
+and final accuracy with various failure probabilities.
+
+TODO: Define the \emph{depth of a task}.
+
+\begin{def}{Depth of a question}
+Primitive questions have depth 0.
+A question has depth $n$ if $H$ evaluates it using sub-questions of depth $n-1$
+    or decomposes it into sub-questions of depth $n-1$.
+\end{def}
+
+\begin{example}
+    The decomposition rule for \task{permutation powering} from \textcite[table
+    3]{CSASupAmp} is:
+    \begin{equation}
+        \sigma^{2k}(x) &= \sigma^k(\sigma^k(x)) \\
+        \sigma^{2k+1}(x) &= \sigma(\sigma^k(\sigma^k(x)))
+    \end{equation}
+
+    \begin{itemize}
+        \item ‘What is $\sigma(4)$?’, has depth 0, because it is a primitive
+            question.
+        \item ‘What is $\sigma^2(4)$?’, has depth 1, because $H$ decomposes it
+            into ‘What is $\sigma(4)$?’ and ‘What is $\sigma(\left<\text{answer
+            to the first sub-question}\right>)$, which are primitive questions
+            (depth 0).
+        \item ‘What is $\sigma^3(4)$?’, has depth 1.
+        \item ‘What is $\sigma^4(4)$?’, has depth 2.
+        \item ‘What is $\sigma^8(4)$?’, has depth 3.
+    \end{itemize}
+\end{example}
+
+- Why am I talking about depth? Because the greater the depth, the more
+correctly learned sub-answers it depends on.
+
+Predictions based on ChriReAmp:
+- Overall failure rate higher the deeper the task.
+- Overall failure rate stays the same or goes down the deeper the task.
+- Or for both there is a $p_T$ such that if $p_f \geqq p_T$ the failure rate
+goes up with depth and below that it stays the same or goes down. And the $p_T$
+of SupAmp is smaller than that of $ReAmp$.
+
+\OQ Can we model this? Put numbers on the predictions? Or just make the
+argument behind the qualitative predictions more rigorous, less based on
+intuition? I guess Paul has thought about it rigorously.
+
+- Could first introduce failures to SupAmp and see if the overall failure rate
+actually blows up.
+- Then do it in ReAmp and see if it goes down.
+
+
+\section{How to fail}
+
+- How to do it?
+    - ReAmp: Make the overseer output a random reward (eg. from ${0,
+    1}$ in \task{permutation powering}) with probability $p_f$.
+    - SupAmp: Make the overseer output a random answer (eg. from ${0, …,
+    N}$ in \task{permutation powering}) with probability $p_f$.
+    - What about the sub-questions? – The overseer could ask wrong sub-questions
+    sometimes. This should be equivalent to the other failure modes with higher
+    failure probability.
+
+
+\section{Further questions}
+
+- Can we model this? Can we put numbers on it?
+- Anything else?
+    - What impact do failures have on the learning performance with RL?
+
+
+
+\printbibliography
+
+\end{document}
