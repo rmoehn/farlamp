@@ -1,12 +1,10 @@
-Was soll in der Analyse stehen? Welche Punkte kann ich festnageln und
-niederschreiben?
-
 \section{Introduction}
 
 context:
 - Capability amplification can cause the failure rate to blow up.
 - To fix this, use reliability amplification.
-- RelAmp requires extra design work and multiplies computational cost.
+- RelAmp requires extra design work (→ more complex design) and multiplies
+computational cost.
 - RL might produce reliable agents without reliability amplification. Could
 avoid the extra cost.
 
@@ -124,23 +122,46 @@ ReAmp.
     \end{itemize}
 \end{example}
 
-    * * * * *
 
-- implicit and explicit tree and how it entails the research question
-- make it explicit: height of the question for question decomposition. Then note
-that it's analogous for evaluation decomposition.
+\section{Prediction}
+
 - my expectation (is it already in ChriRelAmp?): once the failure probability
 gets greater than a threshold, the overall failure probability goes up
-    - Threshold depends on the parameters like determinism and learning
-    mechanism
-    - Tried to make further predictions, but so far can't write down good
-    reasons, because I know too little about the details of SL, RL.
-        - The simplifications I made (eg. lookup table vs. small concepts,
-        hammering in vs. step by step) didn't suffice. Or something.
-        - Perhaps include a short sample discussion and mark open questions.
-        - Expect SupAmp to do well enough with non-deterministic agent, but fail
-        with deterministic one?
-- So how to implement?
-- What experiments to do?
-    - compare SL and RL with different failure rates and perhaps
-    non-deterministic vs. deterministic overseer
+- Threshold depends on the parameters like determinism and learning
+mechanism
+- Tried to make further predictions, but so far can't write down good
+reasons, because I know too little about the details of SL, RL.
+- For example, \textcite{ChriRelAmp} predicts: ‘if the overseer fails with
+probability $1 \%$, then this only changes the reward function by 0.01, and an
+RL agent should still avoid highly undesirable actions’
+- Can't the same be said for SL? – Only $1 \%$ of samples will be wrong and
+assuming enough regularization to make the learner learn small concepts, it
+would treat these samples as outliers.
+- Note that \textcite{ChriRelAmp} doesn't make a statement about SL. He only
+predicts that IL won't be robust. I imagine IL to be closer to a lookup table
+than to a concept learner, so this makes sense. Although we couldn't solve the
+tasks from \textcite{CSASupAmp} with a lookup table, because they are
+combinatorial and need the learner to learn concepts.
+
+- Also expect that a non-deterministic agent will mean a higher threshold than a
+non-deterministic one, because it doesn't hammer home some wrong input.
+- On the other hand, if the domain of input is large, wrong input will only have
+a small chance of being hammered.
+- Another question where I can hardly make a prediction.
+
+
+\section{Experiments}
+
+- compare SL and RL with different failure rates and perhaps
+non-deterministic vs. deterministic overseer
+- perhaps different degrees of regularization, too
+- how to model the failure?
+    - overseer outputs random answer (SL) or reward (RL) with certain
+    probability
+    - deterministic failure: same output for same input
+    - non-deterministic failure: various outputs for various inputs
+    - Here it appears better to inject the failure in the output of $H'$ rather
+    than making $H$ fail. Because the latter would just lower the learning
+    performance of $H'$/there would be a layer between where the failure happens
+    and the place where we interested in observing the effects.
+    - So do the same for deterministic.
