@@ -1,0 +1,146 @@
+Was soll in der Analyse stehen? Welche Punkte kann ich festnageln und
+niederschreiben?
+
+\section{Introduction}
+
+context:
+- Capability amplification can cause the failure rate to blow up.
+- To fix this, use reliability amplification.
+- RelAmp requires extra design work and multiplies computational cost.
+- RL might produce reliable agents without reliability amplification. Could
+avoid the extra cost.
+
+problem:
+- Don't know whether RL will increase reliability sufficiently. In high-stakes
+situations it needs to be very high. \cite[Cf.][]{ChriLearnCata}.
+
+response:
+- Find out how introducing overseer failure to the scheme from CSASupAmp
+increases overall failure rate.
+
+- In this preliminary analysis I lay out my current understanding of the
+concepts and what I need to do. I will flesh it out on the way to
+implementation.
+
+
+\section{Concepts}
+
+- Need to nail down some things in order to understand how to implement, what
+experiments to run, what we predict and why.
+
+
+\subsection{Overseer determinism}
+
+- Overseer can behave deterministically, ie. has the same output for the same
+input.
+- Or non-deterministically, ie. for any input it fails with small probability.
+- Expect this to have a big impact on how the learners, especially SupAmp, deal
+with failure. – See sec. \ref{sec:non-predictions}.
+- \OQ Which to use is not clear to me.
+    - \textcite{ChriRelAmp} appears to model a nondeterministic overseer. – The
+    agent is modelled as a distribution over policies with an adversarial policy
+    chosen with probability $\epsilon$. This needs to be chosen for every input.
+    Otherwise we would have an agent that is completely adversarial with
+    probability $\epsilon$.
+    - What is more realistic? That goes both ways. If the overseer is a learned
+    agent itself, as in \textcite{CSASupAmp}, it is mostly deterministic.
+    (Although $H'$ is not stationary and therefore can give different answers
+    for the same input over time. However, I'd expect it to become less varied
+    over time.)
+    - If the overseer is a human, as in Ought's factored evaluation experiments
+    \parencite{StuhDelCog}, it would be more non-deterministic.
+
+
+\subsection{Explicit and implicit tree}
+
+- questions are answered using an implicit tree of sub-questions.
+- (Write this as questions.) If the overseer wants to find $a = \sigma^4(7)$, it
+decomposes it into $a_1 = \sigma^2(7)$ and $a = \sigma^2(a_1)$. In order to get
+correct answers, $X$ has
+to have learned them before. So at some point the overseer must have found $a =
+\sigma^2(7)$ and decomposed it into $a_1 = \sigma(7)$ and $a = \sigma(a_1)$.
+- So there is a tree rooted in the question, ‘What is $\sigma^4(7)$?’ and whose
+leaves are primitive questions.
+- The whole tree is never explicit, because $H$ decomposes only the root
+question and $X$ is expected to have learned the answers to the sub-questions.
+- But we can't train all possible questions and answers, right? The learner has
+to generalize from a limited set.
+
+- The number of nodes in the tree grows exponentially with the height of the
+tree, assuming that $H$ decomposes every question into at least two
+sub-questions.
+- This means that the overall failure probably grows exponentially with the
+height of the tree, if one wrong sub-answer anywhere in the tree entails a wrong
+root answer.
+- Two quibbles: errors can cancel each other out. I suspect this is improbable
+enough to not be able to compete with the exponential growth. This reasoning is
+based on an explicit tree.
+- With an implicit tree the learning algorithm stands between the overseer
+failure and the overall failure.
+- If at each root question $q$ with height $h(q)$ $X$ returns correct
+sub-answers to the sub-questions $q_i$ despite the training input for these
+lower-than-$h(q)$ questions being wrong sometimes, the overall failure
+probability is just the overseer's failure probability.
+- If, however, $X$ adopts $H$'s failures, the failures compound.
+- How the learning algorithm influences the outcome is the core of this research
+project.
+
+
+\subsection{Height of a question}
+
+- The height of a question equals the height of the implicit tree of
+sub-questions used to answer the question.
+- A definition that doesn't depend on trees:
+
+TODO: Make this just for sub-questions to give answer.
+\begin{def}{Height of a question} By recursion:
+    \begin{enumerate}
+    \item Primitive questions have height 0.
+    \item A question has height $n$ if the maximum height of a sub-question
+        asked by $H$ to generate a response is $n-1$.
+    \end{enumerate}
+The response will be an answer in the case of SupAmp and a reward in the case of
+ReAmp.
+\end{def}
+
+\begin{example}
+    The decomposition rule for \task{permutation powering} from \textcite[table
+    3]{CSASupAmp} is:
+    \begin{equation}
+        \sigma^{2k}(x) &= \sigma^k(\sigma^k(x)) \\
+        \sigma^{2k+1}(x) &= \sigma(\sigma^k(\sigma^k(x)))
+    \end{equation}
+
+    \begin{itemize}
+        \item ‘What is $\sigma(4)$?’, has height 0, because it is a primitive
+            question.
+        \item ‘What is $\sigma^2(4)$?’, has height 1, because $H$ decomposes it
+            into ‘What is $\sigma(4)$?’ and ‘What is $\sigma(\left<\text{answer
+            to the first sub-question}\right>)$, which are primitive questions
+            (height 0).
+        \item ‘What is $\sigma^3(4)$?’, has height 1.
+        \item ‘What is $\sigma^4(4)$?’, has height 2.
+        \item ‘What is $\sigma^8(4)$?’, has height 3.
+    \end{itemize}
+\end{example}
+
+    * * * * *
+
+- implicit and explicit tree and how it entails the research question
+- make it explicit: height of the question for question decomposition. Then note
+that it's analogous for evaluation decomposition.
+- my expectation (is it already in ChriRelAmp?): once the failure probability
+gets greater than a threshold, the overall failure probability goes up
+    - Threshold depends on the parameters like determinism and learning
+    mechanism
+    - Tried to make further predictions, but so far can't write down good
+    reasons, because I know too little about the details of SL, RL.
+        - The simplifications I made (eg. lookup table vs. small concepts,
+        hammering in vs. step by step) didn't suffice. Or something.
+        - Perhaps include a short sample discussion and mark open questions.
+        - Expect SupAmp to do well enough with non-deterministic agent, but fail
+        with deterministic one?
+- So how to implement?
+- What experiments to do?
+    - compare SL and RL with different failure rates and perhaps
+    non-deterministic vs. deterministic overseer
