@@ -7,7 +7,7 @@
 \subject{Analysis}
 \title{Overseer failures in SupAmp and ReAmp}
 \subtitle{How to determine their effect on overall failure rate}
-\author{Richard Möhn}
+\author{Richard Möhn\thanks{Work funded by Paul Christiano.}}
 \date{\today}
 
 \begin{document}
@@ -16,25 +16,24 @@
 
 \section{Introduction}
 
-context:
-- Capability amplification can cause the failure rate to blow up.
-- To fix this, use reliability amplification.
-- RelAmp requires extra design work (→ more complex design) and multiplies
-computational cost.
-- RL might produce reliable agents without reliability amplification. Could
-avoid the extra cost.
+Amplifying an agent with low failure rate can cause the failure rate to grow
+exponentially with the degree of amplification. To fix this, reliability
+amplification can be used. Alternatively, we expect distillation by
+reinforcement learning (RL) to prevent the failure rate from blowing up and even
+increase reliability.
+However, whether the increase will be sufficient, we don't know.
+\parencite{ChriRelAmp} Reliability needs to be very high in high-stakes
+situations \parencite[see][]{ChriLearCata}.
 
-problem:
-- Don't know whether RL will increase reliability sufficiently. In high-stakes
-situations it needs to be very high. \cite[Cf.][]{ChriLearnCata}.
+If RL alone is sufficient, we can avoid the computational and design overhead of
+reliability amplification. Therefore, I will investigate how overseer failure
+changes overall failure rate in the iterated distillation and amplification
+scheme from \textcite{CSASupAmp}.
 
-response:
-- Find out how introducing overseer failure to the scheme from CSASupAmp
-increases overall failure rate.
-
-- In this preliminary analysis I lay out my current understanding of the
-concepts and what I need to do. I will flesh it out on the way to
-implementation.
+How to adapt this scheme to reinforcement learning is explored in \href{…}{…}.
+In this preliminary analysis I lay out my current understanding of overseer
+failure, related concepts and what I need to do. I will update it and answer
+open questions on the way to implementation.
 
 
 \section{Concepts}
