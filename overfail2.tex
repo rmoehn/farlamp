@@ -1,3 +1,19 @@
+\documentclass{farlamp}
+
+% latexmk -pvc -pdfxe -bibtex -interaction=nonstopmode -outdir=build overfail2.tex
+
+\addbibresource{references.bib}
+
+\subject{Analysis}
+\title{Overseer failures in SupAmp and ReAmp}
+\subtitle{How to determine their effect on overall failure rate}
+\author{Richard Möhn}
+\date{\today}
+
+\begin{document}
+\maketitle
+\tableofcontents
+
 \section{Introduction}
 
 context:
@@ -33,7 +49,7 @@ experiments to run, what we predict and why.
 input.
 - Or non-deterministically, ie. for any input it fails with small probability.
 - Expect this to have a big impact on how the learners, especially SupAmp, deal
-with failure. – See sec. \ref{sec:non-predictions}.
+with failure. – See sec. \ref{sec:prediction}.
 - \OQ Which to use is not clear to me.
     - \textcite{ChriRelAmp} appears to model a nondeterministic overseer. – The
     agent is modelled as a distribution over policies with an adversarial policy
@@ -91,7 +107,7 @@ sub-questions used to answer the question.
 - A definition that doesn't depend on trees:
 
 TODO: Make this just for sub-questions to give answer.
-\begin{def}{Height of a question} By recursion:
+\begin{definition}{Height of a question} By recursion:
     \begin{enumerate}
     \item Primitive questions have height 0.
     \item A question has height $n$ if the maximum height of a sub-question
@@ -99,15 +115,15 @@ TODO: Make this just for sub-questions to give answer.
     \end{enumerate}
 The response will be an answer in the case of SupAmp and a reward in the case of
 ReAmp.
-\end{def}
+\end{definition}
 
 \begin{example}
     The decomposition rule for \task{permutation powering} from \textcite[table
     3]{CSASupAmp} is:
-    \begin{equation}
+    \begin{align}
         \sigma^{2k}(x) &= \sigma^k(\sigma^k(x)) \\
         \sigma^{2k+1}(x) &= \sigma(\sigma^k(\sigma^k(x)))
-    \end{equation}
+    \end{align}
 
     \begin{itemize}
         \item ‘What is $\sigma(4)$?’, has height 0, because it is a primitive
@@ -124,6 +140,7 @@ ReAmp.
 
 
 \section{Prediction}
+\label{sec:prediction}
 
 - my expectation (is it already in ChriRelAmp?): once the failure probability
 gets greater than a threshold, the overall failure probability goes up
@@ -165,3 +182,6 @@ non-deterministic vs. deterministic overseer
     performance of $H'$/there would be a layer between where the failure happens
     and the place where we interested in observing the effects.
     - So do the same for deterministic.
+
+\printbibliography
+\end{document}

@@ -51,7 +51,7 @@
 \RequirePackage{amsthm}
 \theoremstyle{definition}
 \newtheorem{example}{Example}[section]
-\newtheorem{def}{Definition}[section]
+\newtheorem{definition}{Definition}[section]
 
 % Credits: https://tex.stackexchange.com/a/44062/195421
 \newcommand*{\zkref}[1]{\ignorespaces}
@@ -67,4 +67,10 @@
 \RequirePackage{polyglossia}
 \setmainlanguage[variant=british]{english}
 
-\RequirePackage[style=authoryear-icomp]{biblatex}
+\RequirePackage[
+    style=authoryear-icomp,
+    maxcitenames=1,
+    seconds=true,
+    date=year,
+    urldate=iso
+]{biblatex}
