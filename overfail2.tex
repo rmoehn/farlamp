@@ -201,19 +201,22 @@ training is laid. If this foundation is faulty, correct results cannot be built.
 
 \section{Experiments}
 
-- compare SL and RL with different failure rates and perhaps
-non-deterministic vs. deterministic overseer
-- perhaps different degrees of regularization, too
-- how to model the failure?
-    - overseer outputs random answer (SL) or reward (RL) with certain
-    probability
-    - deterministic failure: same output for same input
-    - non-deterministic failure: various outputs for various inputs
-    - Here it appears better to inject the failure in the output of $H'$ rather
-    than making $H$ fail. Because the latter would just lower the learning
-    performance of $H'$/there would be a layer between where the failure happens
-    and the place where we interested in observing the effects.
-    - So do the same for deterministic.
+I want to measure the overall failure rate of SupAmp and ReAmp, given various
+overseer failure rates, a non-deterministic and a deterministic overseer, and
+perhaps different degrees of regularization. I will decide the details later.
+
+In the non-deterministic case overseer failure can be modelled by injecting a
+random answer (SupAmp) or random evaluation (ReAmp) into the output of $H'$ with
+a certain probability. One might think that $H$ should fail, because it is the
+actual overseer and $H'$ its imitation. But that would just degrade the learning
+performance of $H'$ and not deliver randomly wrong training inputs to $X$ as
+required.
+
+The deterministic case is similar, except that a small fixed set of inputs must
+be mapped to fixed random outputs. This can be achieved with a lookup table or
+by hashing the input to provide a fail/no fail value and in the former case
+hashing them again to get the random-but-fixed output.
+
 
 \printbibliography
 \end{document}
