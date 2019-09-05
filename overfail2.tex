@@ -42,15 +42,21 @@ Before I can write about my predictions, what experiments to run and how to
 implement them, I will pin down some concepts.
 
 
-\subsection{Factored cognition and factored evaluation}
+\subsection{Providing and evaluating answers}
 
-- Ought terminology.
-- In the following I will mostly write about the cognition case, because it is a
-little more straightforward.
-- It's easy to derive statements about the evaluation case from that.
+In SupAmp \parencite{CSASupAmp} the overseer provides answers to root questions.
+If we want to replace the distillation by SL with distillation by RL, the
+overseer needs to evaluate answers that $X$ proposes. In both cases does the
+overseer ask sub-questions and it uses the sub-answers to determine its reply.
+Ought calls these two modes of IDA \parencite[see][]{CotrIDA} ‘factored
+cognition’ \parencite{StuhFacCog} and ‘factored evaluation’
+\parencite{StuhDelCog}.
+
+I will mostly write about the SL case, because it is slightly more
+straightforward. You can easily derive analogous statements about the RL case.
 
 
-\subsection{Overseer determinism}
+\subsection{Overseer determinism and non-determinism}
 
 The overseer might behave and fail deterministically or non-deterministically.
 Ie. it might have a fixed output for each input, and thus the same failures for
