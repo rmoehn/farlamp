@@ -68,14 +68,6 @@ experiments \parencite{StuhDelCog}, it is non-deterministic. Of course, if the
 human output is automated \parencite[see][sec. ‘Caching’ f.]{StuhTaxCapAmp},
 determinism results.
 
-% TODO: Put the main insights in a comment. This explains partly why above I
-% tend to deduce. But I feel this has no space in this analysis.
-appears to assume
-non-determinism. The overseer is modelled as a distribution over policies, some
-of which are adversarial. He doesn't specify whether to sample from this
-distribution once before a whole training episode, or to resample at every step.
-But the former is not realistic, because
-
 % Why I tend to deduce non-determinism:
 %
 % If a sample from this distribution was drawn before a whole training episode,
@@ -136,16 +128,15 @@ core question of this research project.
 
 \subsection{Height of a question}
 
-- The height of a question equals the height of the implicit tree of
-sub-questions used to answer the question.
-- A definition that doesn't depend on trees:
+A question is answered using an implicit tree of sub-questions and the height of
+that tree is the height of the question. In addition, here is a definition that
+doesn't depend on trees.
 
-TODO: Make this just for sub-questions to give answer.
-\begin{definition}{Height of a question} By recursion:
+\begin{definition}[Height of a question] By recursion:
     \begin{enumerate}
     \item Primitive questions have height 0.
-    \item A question has height $n$ if the maximum height of a sub-question
-        asked by $H$ to generate a response is $n-1$.
+    \item A question has height $n$ if $n-1$ is the maximum height of a
+        sub-question asked by $H$ to generate a response.
     \end{enumerate}
 The response will be an answer in the case of SupAmp and a reward in the case of
 ReAmp.
@@ -173,32 +164,39 @@ ReAmp.
 \end{example}
 
 
-\section{Prediction}
+\section{Predictions}
 \label{sec:prediction}
 
-- my expectation (is it already in ChriRelAmp?): once the failure probability
-gets greater than a threshold, the overall failure probability goes up
-- Threshold depends on the parameters like determinism and learning
-mechanism
-- Tried to make further predictions, but so far can't write down good
-reasons, because I know too little about the details of SL, RL.
-- For example, \textcite{ChriRelAmp} predicts: ‘if the overseer fails with
-probability $1 \%$, then this only changes the reward function by 0.01, and an
-RL agent should still avoid highly undesirable actions’
-- Can't the same be said for SL? – Only $1 \%$ of samples will be wrong and
-assuming enough regularization to make the learner learn small concepts, it
-would treat these samples as outliers.
-- Note that \textcite{ChriRelAmp} doesn't make a statement about SL. He only
-predicts that IL won't be robust. I imagine IL to be closer to a lookup table
-than to a concept learner, so this makes sense. Although we couldn't solve the
-tasks from \textcite{CSASupAmp} with a lookup table, because they are
-combinatorial and need the learner to learn concepts.
+I expect that there is a threshold. If the overseer's failure probability is
+above that threshold, IDA increases the overall failure probability. If the
+overseer's failure probability is below the threshold, IDA decreases the overall
+failure probability. \textcite{ChriRelAmp} might have expressed this before, but
+I don't quite understand the relevant sections.
 
-- Also expect that a non-deterministic agent will mean a higher threshold than a
-non-deterministic one, because it doesn't hammer home some wrong input.
-- On the other hand, if the domain of input is large, wrong input will only have
-a small chance of being hammered.
-- Another question where I can hardly make a prediction.
+And I expect that the threshold depends on a few parameters, such as whether $H$
+is deterministic and how $X$ is trained. I tried to predict in which direction
+each parameter pushes the threshold, but so far my ideas have led me into the
+fog, because I know too little about the details of SL and RL.
+
+For example, \textcite{ChriRelAmp} reasons: ‘if the overseer fails with
+probability $1 \%$, then this only changes the reward function by 0.01, and an
+RL agent should still avoid highly undesirable actions’ Can't the same be said
+for SL? If only $1 \%$ of the training data for $X$ are wrong, won't it treat
+them as outliers, provided enough regularization?
+
+Note that \textcite{ChriRelAmp} doesn't state anything about SL. He only
+predicts that distillation by IL will decrease reliability. I imagine IL closer
+to a lookup table than to a concept learner, so it makes sense that it will
+replicate $H$'s failures. But a lookup table wouldn't hold the amount of
+possible of the tasks in \textcite{CSASupAmp} anyway.
+
+I do think that non-determinism will result in a greater failure blow-up
+threshold, because a randomly wrong label will be overridden later by the
+correct one. Conversely a overseer would repeatedly give the learner the same
+wrong label. One might argue such repetitions are rare if the domain is large.
+But the domains start out fairly small in the training schedule of
+\textcite{CSASupAmp}. And the start is where the foundation for the rest of the
+training is laid. If this foundation is faulty, correct results cannot be built.
 
 
 \section{Experiments}
