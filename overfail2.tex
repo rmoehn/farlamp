@@ -38,65 +38,100 @@ open questions on the way to implementation.
 
 \section{Concepts}
 
-- Need to nail down some things in order to understand how to implement, what
-experiments to run, what we predict and why.
+Before I can write about my predictions, what experiments to run and how to
+implement them, I will pin down some concepts.
+
+
+\subsection{Factored cognition and factored evaluation}
+
+- Ought terminology.
+- In the following I will mostly write about the cognition case, because it is a
+little more straightforward.
+- It's easy to derive statements about the evaluation case from that.
 
 
 \subsection{Overseer determinism}
 
-- Overseer can behave deterministically, ie. has the same output for the same
-input.
-- Or non-deterministically, ie. for any input it fails with small probability.
-- Expect this to have a big impact on how the learners, especially SupAmp, deal
-with failure. – See sec. \ref{sec:prediction}.
-- \OQ Which to use is not clear to me.
-    - \textcite{ChriRelAmp} appears to model a nondeterministic overseer. – The
-    agent is modelled as a distribution over policies with an adversarial policy
-    chosen with probability $\epsilon$. This needs to be chosen for every input.
-    Otherwise we would have an agent that is completely adversarial with
-    probability $\epsilon$.
-    - What is more realistic? That goes both ways. If the overseer is a learned
-    agent itself, as in \textcite{CSASupAmp}, it is mostly deterministic.
-    (Although $H'$ is not stationary and therefore can give different answers
-    for the same input over time. However, I'd expect it to become less varied
-    over time.)
-    - If the overseer is a human, as in Ought's factored evaluation experiments
-    \parencite{StuhDelCog}, it would be more non-deterministic.
+The overseer might behave and fail deterministically or non-deterministically.
+Ie. it might have a fixed output for each input, and thus the same failures for
+a specific fraction of inputs. Or it might return a random value for any input,
+with a certain probability.
+
+I can't rule out either possibility. While I tend to deduce non-determinism from
+the overseer model in \textcite{ChriRelAmp}, this deduction is countered by the
+section on sequential decision making. Further, there are realistic examples of
+both possibilities. If the overseer is a learned agent, as in
+\textcite{CSASupAmp}, it is mostly deterministic. Although there, $H'$ is not
+stationary, ie. its answers change over time. But I expect it to converge on
+determinism. If the overseer is a human, as in Ought's factored evaluation
+experiments \parencite{StuhDelCog}, it is non-deterministic. Of course, if the
+human output is automated \parencite[see][sec. ‘Caching’ f.]{StuhTaxCapAmp},
+determinism results.
+
+% TODO: Put the main insights in a comment. This explains partly why above I
+% tend to deduce. But I feel this has no space in this analysis.
+appears to assume
+non-determinism. The overseer is modelled as a distribution over policies, some
+of which are adversarial. He doesn't specify whether to sample from this
+distribution once before a whole training episode, or to resample at every step.
+But the former is not realistic, because
+
+% Why I tend to deduce non-determinism:
+%
+% If a sample from this distribution was drawn before a whole training episode,
+% the whole training input might be adversarial. This appears less desirable
+% than sampling a new overseer for each training step and therefore having
+% adversity dispersed through the training. The latter corresponds to a
+% non-deterministic overseer.
+%
+% Also sampling a "pure" overseer for a whole episode isn't possible. The result
+% of the formalisation, the mixture, is realistic. The ingredients aren't.
+% Because we wouldn't construct a completely adversarial policy. And we can't
+% construct a completely benign one.
+%
+% Why sequential decision making counters: If the agents have to make a sequence
+% of decisions, it sounds they're not resampled between decisions.
+%
+% Sometimes-adversarial deterministic policies are compatible with the
+% "distribution A over policies", but not with the "view this as a simple
+% mixture".
 
 
 \subsection{Explicit and implicit tree}
 
-- questions are answered using an implicit tree of sub-questions.
-- (Write this as questions.) If the overseer wants to find $a = \sigma^4(7)$, it
-decomposes it into $a_1 = \sigma^2(7)$ and $a = \sigma^2(a_1)$. In order to get
-correct answers, $X$ has
-to have learned them before. So at some point the overseer must have found $a =
-\sigma^2(7)$ and decomposed it into $a_1 = \sigma(7)$ and $a = \sigma(a_1)$.
-- So there is a tree rooted in the question, ‘What is $\sigma^4(7)$?’ and whose
-leaves are primitive questions.
-- The whole tree is never explicit, because $H$ decomposes only the root
-question and $X$ is expected to have learned the answers to the sub-questions.
-- But we can't train all possible questions and answers, right? The learner has
-to generalize from a limited set.
+In \textcite{CSASupAmp} the overseer answers questions using an implicit tree of
+sub-questions. For example, suppose it is given a permutation $\sigma$ and has
+to answer, ‘What is $\sigma^4(7)$?’. In order to answer this question, the
+overseer asks two sub-questions to $X$: ‘What is $\sigma^2(7)$?’, and, ‘What is
+$\sigma^2(\left<\text{answer to first sub-question}\right>)$?’
+If $X$ is to answer correctly, it must have learned how to answer questions
+about $\sigma^2$. Most likely, it got training data for that when the overseer
+answered questions about $\sigma^2$ by asking two sub-questions each about
+$\sigma$.
 
-- The number of nodes in the tree grows exponentially with the height of the
-tree, assuming that $H$ decomposes every question into at least two
-sub-questions.
-- This means that the overall failure probably grows exponentially with the
-height of the tree, if one wrong sub-answer anywhere in the tree entails a wrong
-root answer.
-- Two quibbles: errors can cancel each other out. I suspect this is improbable
-enough to not be able to compete with the exponential growth. This reasoning is
-based on an explicit tree.
-- With an implicit tree the learning algorithm stands between the overseer
-failure and the overall failure.
-- If at each root question $q$ with height $h(q)$ $X$ returns correct
-sub-answers to the sub-questions $q_i$ despite the training input for these
-lower-than-$h(q)$ questions being wrong sometimes, the overall failure
-probability is just the overseer's failure probability.
-- If, however, $X$ adopts $H$'s failures, the failures compound.
-- How the learning algorithm influences the outcome is the core of this research
-project.
+So there is a tree rooted in the question, ‘What is $\sigma^4(7)$?’ and whose
+leaves are questions of the form, ‘What is $\sigma(n)$?’. This tree is never
+explicit. $H$ decomposes only the root question and $X$ is expected to have
+learned the answers to the sub-questions. Decomposing them recursively until it
+reaches the primitive $\sigma(n)$ questions would be too expensive.
+
+Analogous implicit tree structures arise for all tasks that SupAmp or ReAmp
+solve. And the number of nodes in the tree grows exponentially with its height,
+assuming that for each question $H$ asks at least two sub-questions.
+Now suppose for a moment that the tree is explicit. Ie. the root question gets
+decomposed recursively and each sub-question is answered by an agent. And
+suppose that a wrong sub-answer anywhere in the tree entails a wrong root
+answer. Then a wrong root answer is given with a probability that approaches 1
+exponentially in the height of the tree \parencite{ChriRelAmp}.
+
+This holds for the explicit tree. With the implicit tree a learning algorithm
+stands between agent failure and overall failure. If $X$ is trained in a way
+that it adopts $H$'s failures, the failure probability compounds as with an
+explicit tree. If $X$ does not adopt $H$'s failures, because it recognizes them
+as outliers, for example, the overall failure probability is equal to the
+probability of $H$ answering the root question wrong.
+How the training mechanism influences the overall failure probability is the
+core question of this research project.
 
 
 \subsection{Height of a question}
