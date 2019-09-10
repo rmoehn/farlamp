@@ -125,20 +125,6 @@ it becomes for a learner to recognize right from wrong. The goal of the Farlamp
 project is to find out how the training algorithm influences the failure rate.
 
 
-\subsection{Providing and evaluating answers}
-
-In SupAmp \parencite{CSASupAmp} the overseer provides answers to root questions.
-If we want to replace the distillation by SL with distillation by RL, the
-overseer needs to evaluate answers that $X$ proposes. In both cases does the
-overseer ask sub-questions and it uses the sub-answers to determine its reply.
-Ought calls these two modes of IDA \parencite[see][]{CotrIDA} ‘factored
-cognition’ \parencite{StuhFacCog} and ‘factored evaluation’
-\parencite{StuhDelCog}.
-
-I will mostly write about the SL case, because it is slightly more
-straightforward. You can easily derive analogous statements about the RL case.
-
-
 \subsection{Overseer determinism and non-determinism}
 
 The overseer might behave and fail deterministically or non-deterministically.
@@ -176,43 +162,6 @@ determinism results.
 % Sometimes-adversarial deterministic policies are compatible with the
 % "distribution A over policies", but not with the "view this as a simple
 % mixture".
-
-
-\subsection{Explicit and implicit tree}
-
-In \textcite{CSASupAmp} the overseer answers questions using an implicit tree of
-sub-questions. For example, suppose it is given a permutation $\sigma$ and has
-to answer, ‘What is $\sigma^4(7)$?’. In order to answer this question, the
-overseer asks two sub-questions to $X$: ‘What is $\sigma^2(7)$?’, and, ‘What is
-$\sigma^2(\left<\text{answer to first sub-question}\right>)$?’
-If $X$ is to answer correctly, it must have learned how to answer questions
-about $\sigma^2$. Most likely, it got training data for that when the overseer
-answered questions about $\sigma^2$ by asking two sub-questions each about
-$\sigma$.
-
-So there is a tree rooted in the question, ‘What is $\sigma^4(7)$?’ and whose
-leaves are questions of the form, ‘What is $\sigma(n)$?’. This tree is never
-explicit. $H$ decomposes only the root question and $X$ is expected to have
-learned the answers to the sub-questions. Decomposing them recursively until it
-reaches the primitive $\sigma(n)$ questions would be too expensive.
-
-Analogous implicit tree structures arise for all tasks that SupAmp or ReAmp
-solve. And the number of nodes in the tree grows exponentially with its height,
-assuming that for each question $H$ asks at least two sub-questions.
-Now suppose for a moment that the tree is explicit. Ie. the root question gets
-decomposed recursively and each sub-question is answered by an agent. And
-suppose that a wrong sub-answer anywhere in the tree entails a wrong root
-answer. Then a wrong root answer is given with a probability that approaches 1
-exponentially in the height of the tree \parencite{ChriRelAmp}.
-
-This holds for the explicit tree. With the implicit tree a learning algorithm
-stands between agent failure and overall failure. If $X$ is trained in a way
-that it adopts $H$'s failures, the failure probability compounds as with an
-explicit tree. If $X$ does not adopt $H$'s failures, because it recognizes them
-as outliers, for example, the overall failure probability is equal to the
-probability of $H$ answering the root question wrong.
-How the training mechanism influences the overall failure probability is the
-core question of this research project.
 
 
 \subsection{Height of a question}
