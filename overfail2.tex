@@ -1,13 +1,14 @@
 \documentclass{farlamp}
 
 % latexmk -pvc -pdfxe -bibtex -interaction=nonstopmode -outdir=build overfail2.tex
+% ls * |entr latexmk -pdfxe -bibtex -interaction=nonstopmode -outdir=build overfail2.tex
 
 \addbibresource{references.bib}
 
 \subject{Analysis}
 \title{Overseer failures in SupAmp and ReAmp}
 \subtitle{How to determine their effect on overall failure rate}
-\author{Richard Möhn\thanks{Work funded by Paul Christiano.}}
+\author{Richard Möhn}
 \date{\today}
 
 \begin{document}
@@ -22,22 +23,22 @@ repository.})
 
 Capability amplification can cause the failure rate of an ML system to blow up,
 even when the amplified agent fails rarely. To fix this, reliability
-amplification can be used. Alternatively, we expect distillation by
-reinforcement learning (RL) to keep the failure rate down and even decrease it
-below the agent's. However, whether the result will be reliable enough, we don't
-know.\parencite{ChriRelAmp} But we do need to know in high-stakes situations
+amplification can be used. Alternatively, to keep the failure rate down and even
+decrease it below the agent's, distillation by reinforcement learning (RL) might
+prove sufficient. However, whether the result will be reliable enough, we don't
+know.~\parencite{ChriRelAmp} But we do need to know in high-stakes situations
 \parencite[see][]{ChriLearnCata}.
 
-If RL alone is sufficient, we can avoid the computational and design overhead of
-reliability amplification. Therefore, I will investigate how overseer failure
-changes the overall failure rate, using the iterated distillation and
-amplification scheme from \textcite{CSASupAmp}.
-
-How to adapt this scheme to reinforcement learning is analysed in
+If RL alone is enough, we can avoid the computational and design overhead of
+reliability amplification. Therefore, I'm planning to adapt to RL the iterated
+distillation and amplification scheme from \textcite{CSASupAmp} (See also:
 \href{https://github.com/rmoehn/farlamp/raw/master/supamp-reamp.pdf}{How to turn
-SupAmp into ReAmp?}. In this preliminary analysis I lay out my current
-understanding of overseer failure, related concepts and what I need to do. I
-will update it and answer open questions on the way to implementation.
+SupAmp into ReAmp?}) Once adapted, I can investigate what overall failure rates
+result from various overseer failure rates and other learning parameters.
+
+In this preliminary analysis I lay out my current understanding of overseer
+failure, related concepts and what I need to do. I will update it and answer
+open questions on the way to implementation.
 
 
 \section{Concepts}
@@ -62,86 +63,89 @@ that trains the assistant to become more capable.
 
 \subsection{Iterated amplification and distillation}
 
-The overseer alone can only provide training data until the assistant's
-capability roughly equals the overseer's. After this the training can be
-continued by using \Term{Iterated distillation and amplification} (IDA).
-\Term{Distillation} is the mechanism by which the the assistant is trained.
-Amplfication refers to the assistant helping the overseer generate training data
-by answering questions.
+The overseer alone can only provide data to train the assistant until their
+capabilities are roughly equal. After this the training can be continued by
+using \Term{Iterated distillation and amplification} (IDA). \Term{Distillation}
+is the mechanism by which the the assistant is trained. During
+\Term{amplification} the assistant answers the overseer's questions to help it
+generate higher-level training data.
 
 IDA has been explained in other places \parencite{CotrIDA, ESSMLPIDA}. But in
 order to write this analysis clearly I need the notion of amplification without
-immediate distillation. For this I don't know of any brief explanation.
+immediate distillation. For this I don't know of any brief explanation, so I've
+written one.
 
-Suppose you want to train an assistant $X$ \parencite[symbols taken
-from][]{CSASupAmp} to give a solution to problem $p$. If you want to train $X$
-using supervised learning (SL), you ask yourself: ‘What is the solution to $p$?’
-You answer: ‘The solution is $s$.’ $(p, s)$ is the training datum for $X$.
+Suppose you are an overseer $H$ who wants to train an assistant $X$
+\parencite[symbols taken from][]{CSASupAmp} to give a solution to problem $p$.
+If you want to train $X$ using supervised learning (SL), you ask yourself: ‘What
+is the solution to $p$?’ You answer: ‘The solution is $s$.’ Then $(p, s)$ is the
+training datum for $X$.
 
-If you want to train $X$ using reinforcement learning (RL), $X$ has to suggest a
+If you want to train $X$ using reinforcement learning, $X$ has to suggest a
 solution $s$, then you ask yourself: ‘What reward should I give $X$ for solution
-$s$ to problem $p$?’ You answer: ‘The reward should be $r$’. $r$ is the training
-datum for $X$.
+$s$ to problem $p$?’ You answer: ‘The reward should be $r$’. Then $(p, s, r)$ is
+the training datum for $X$.
 
 After some time $X$ can solve all the problems that you can solve. But you want
-it to become able solve harder problems, for which you alone can't answer the
+it to become able to solve harder problems, for which you alone can't answer the
 question and therefore can't provide training data. What do you do? You break
-the question down to a tree of sub-questions. The tree grows downwards by adding
-sub-questions. The further we go towards the leaves, the easier the questions
-become. The leaf questions are so easy that we can answer them without breaking
-them down further. Then the answers flow upwards and are combined at each node
-until we obtain the root answer. Root answer (and root question in the case of
-SL) can be used as training datum for $X$. This is \Term{iterated
+the question down into sub-questions. These branch out into sub-sub-questions
+and so forth, forming a tree. The further we go towards the leaves, the easier
+the questions become. The leaf questions are so easy that we can answer them
+without breaking them down further. Then the answers flow upwards and are
+combined at each node until we obtain the root answer, the missing piece of the
+training datum $(p, s)$ or $(p, s, r)$ for $X$. This is \Term{iterated
 amplification} (IA), without distillation. (For examples of trees, see
 \textcite{StuhFacCog}.)
 
-This breaking down of questions is computationally expensive, though. What if
-you had an assistant $X^{-1}$ that is almost as capable as $X$? Then you could
+However, this breaking down of questions is computationally expensive. What if
+you had an assistant \X{-1} that is almost as capable as $X$? Then you could
 break down only the top-level question into sub-questions, have them answered by
-$X^{-1}$, and use these sub-answers to answer the root question. Again you've
+\X{-1}, and use these sub-answers to answer the root question. Again you've
 obtained a training datum for $X$.
 
-This is the first iteration of iterated \Term{distillation} and amplification.
--- You train an agent $X^0$ until it is roughly your level. The combination of
-you and the agent forms a more capable compound agent $HX^0$. Then $HX^0$
-generates data to train the next agent $X^1$, which is more capable than $X^0$.
-This is called ‘distilling’ $HX^0$. Now you can team up with $X^1$ to become
-$HX^1$ and generate data to train $X^2$. And so on.
+This would be the first iteration of iterated \Term{distillation} and
+amplification: You train an agent \X{0} until it is roughly as capable as you.
+The combination of you and the agent forms a more capable compound agent
+\HX{0}. Then \HX{0} generates data to train the next agent \X{1}, which is
+more capable than \X{0}. This is called ‘distilling’ \HX{0}. Now you can team
+up with \X{1} to become \HX{1} and generate data to train \X{2}. And so on.
 
-Now we add failure. It's natural that you sometimes make a mistake and return a
-wrong answer. Suppose you're doing IA. And a wrong sub-answer anywhere in the
-tree leads to the root answer being wrong. And each non-leaf question leads to
-at least two sub-questions. Then even if your failure probability is very small,
-the probability of ending up with a wrong root answer approaches 1 exponentially
-quickly in the height of the tree.\parencite{ChriRelAmp}
+Now we add \Term{failure}. It's natural that you sometimes make a mistake and
+return a wrong answer. Suppose you're doing IA. And a wrong sub-answer anywhere
+in the tree leads to the root answer being wrong. And each non-leaf question
+leads to at least two sub-questions. Then even if your failure probability is
+very small, the probability of ending up with a wrong root answer approaches 1
+exponentially quickly in the height of the tree.~\parencite{ChriRelAmp}
 
 What happens with I\emph{D}A isn't so clear. It depends on how the $X^n$ are
 trained. If the training algorithm causes them to faithfully copy all your
 answers, the failure probability will compound as in IA. But if the training
 algorithm makes the $X^n$ good at ‘recognizing concepts’, they will treat some
 wrong inputs as outliers and the failure probability won't compound as quickly,
-or even go down as $n$ grows. Of course, the more mistakes you make, the harder
-it becomes for a learner to recognize right from wrong. The goal of the Farlamp
-project is to find out how the training algorithm influences the failure rate.
+or will even go down as $n$ grows. Of course, the more mistakes you make, the
+harder it becomes for a learner to tell apart right and wrong. The goal of the
+Farlamp project is to find out how the training algorithm influences the failure
+rate.
 
 
 \subsection{Overseer determinism and non-determinism}
 
 The overseer might behave and fail deterministically or non-deterministically.
 Ie. it might have a fixed output for each input, and thus the same failures for
-a specific fraction of inputs. Or it might return a random value for any input,
+a specific set of inputs. Or it might return a random value for any input,
 with a certain probability.
 
-I can't rule out either possibility. While I tend to deduce non-determinism from
-the overseer model in \textcite{ChriRelAmp}, this deduction is countered by the
+I can't rule out either way. While I tend to deduce non-determinism from the
+overseer model in \textcite{ChriRelAmp}, this deduction is countered by the
 section on sequential decision making. Further, there are realistic examples of
-both possibilities. If the overseer is a learned agent, as in
-\textcite{CSASupAmp}, it is mostly deterministic. Although there, $H'$ is not
-stationary, ie. its answers change over time. But I expect it to converge on
-determinism. If the overseer is a human, as in Ought's factored evaluation
-experiments \parencite{StuhDelCog}, it is non-deterministic. Of course, if the
-human output is automated \parencite[see][sec. ‘Caching’ f.]{StuhTaxCapAmp},
-determinism results.
+both ways: If the overseer is a learned agent, as $H'$ in \textcite{CSASupAmp},
+it is mostly deterministic. Granted, the answers of $H'$ change over time,
+because it is trained continuously on data from $H$. But I expect it to converge
+on determinism. If the overseer is a human, as in Ought's factored evaluation
+experiments \parencite{StuhDelCog}, it is non-deterministic. Although
+determinism can again result if the human output is automated
+\parencite[see][sec. ‘Caching’ f.]{StuhTaxCapAmp}.
 
 % Why I tend to deduce non-determinism:
 %
@@ -166,9 +170,11 @@ determinism results.
 
 \subsection{Height of a question}
 
-A question is answered using an implicit tree of sub-questions and the height of
-that tree is the height of the question. In addition, here is a definition that
-doesn't depend on trees.
+This property might become useful later in the process. The height of a
+question is the hight of the tree the question would be decomposed into if
+iterated amplification was used. The following definition doesn't depend on
+trees and iterated amplification, but it uses the notion of primitive questions
+from \textcite[app. C]{CSASupAmp}.
 
 \begin{definition}[Height of a question] By recursion:
     \begin{enumerate}
@@ -193,7 +199,7 @@ ReAmp.
             question.
         \item ‘What is $\sigma^2(4)$?’, has height 1, because $H$ decomposes it
             into ‘What is $\sigma(4)$?’ and ‘What is $\sigma(\left<\text{answer
-            to the first sub-question}\right>)$, which are primitive questions
+            to the first sub-question}\right>)$?’, which are primitive questions
             (height 0).
         \item ‘What is $\sigma^3(4)$?’, has height 1.
         \item ‘What is $\sigma^4(4)$?’, has height 2.

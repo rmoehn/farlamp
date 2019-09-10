@@ -57,6 +57,9 @@
 \newcommand*{\zkref}[1]{\ignorespaces}
 
 \newcommand*{\task}[1]{#1}
+\newcommand*{\Term}[1]{\textbf{#1}}
+\newcommand*{\HX}[1]{\ensuremath{\mathit{HX^{#1}}}}
+\newcommand*{\X}[1]{\ensuremath{\mathit{X^{#1}}}}
 
 \DeclareMathOperator{\Amplify}{Amplify}
 
@@ -68,7 +71,7 @@
 \setmainlanguage[variant=british]{english}
 
 \RequirePackage[
-    style=authoryear-icomp,
+    style=authoryear-comp,
     maxcitenames=1,
     seconds=true,
     date=year,
