@@ -40,55 +40,64 @@ will update it and answer open questions on the way to implementation.
 \section{Concepts}
 
 Before I can write about my predictions, what experiments to run and how to
-implement them, I will pin down some concepts.
+implement them, I will pin down some terms and concepts.
 
 
-\subsection{Terms}
+\subsection{Iterated distillation an amplification}
+
+% Why am I writing all this? Because it hasn't been laid out clearly before.
+% Paul introduces the problem alright, but he assumes a lot of knowledge about
+% IDA and why he's talking about amplification at one point and adds in learning
+% algorithms at another.
 
 - Being more capable corresponds to being able to answer harder questions.
-- Will talk about an overseer and an agent.
+- Will talk about an overseer and an assistant.
 - The overseer is a human or some analog to human judgment.
-- The agent is a machine learning (sub-)system, which the overseer can train to
-answer questions and then use as an assistant. Training and assistance can
-happen concurrently.
-- The overseer alone can only provide training input until the agent's
+- The assistant is a machine learning (sub-)system, which the overseer can train to
+answer questions.
+- The overseer alone can only provide training input until the assistant's
 capability roughly equals that of the overseer.
 - Iterated distillation and amplification is a scheme for an overseer to
-continue providing training input for the agent after it becomes as capable as
+continue providing training input for the assistant after it becomes as capable as
 the overseer.
+
 - Distillation is the part in which the agent is trained.
 - Amplification is the part in which the overseer is assistend by the agent.
-- If the overseer can ask sub-questions to a capable agent, it can
-answer harder questions than it can without assistance. Thus it is able to train
-a more capable agent than itself.
-- The more capable the assistant, the harder questions the overseer can answer,
-the higher-level agent it can train.
 
-- How do you answer a difficult question? By dividing it into sub-questions. If
-the sub-questions are difficult, recur to the first step. If a sub-question is
-easy, answer it. When all sub-answers for a difficult question are given, use
-them to answer the difficult question. Until all difficult questions, and
-therefore also the question at the root are answered.
-- This results in a tree of questions.
-- This is iterated amplification.
+% - If the overseer can ask sub-questions to a capable agent, it can
+% answer harder questions than it can without assistance. Thus it is able to train
+% a more capable agent than itself.
+% - The more capable the assistant, the harder questions the overseer can answer,
+% the higher-level agent it can train.
 
-- Assume more knowledge?
-- The output of the tree is training data for the agent?
+% - How do you answer a difficult question? By dividing it into sub-questions. If
+% the sub-questions are difficult, recur to the first step. If a sub-question is
+% easy, answer it. When all sub-answers for a difficult question are given, use
+% them to answer the difficult question. Until all difficult questions, and
+% therefore also the question at the root are answered.
+% - This results in a tree of questions.
+% - This is iterated amplification.
 
-- Suppose you want to answer a question and the answer to the question will
-serve as training data to train agent $X$.
-- $X$ might be trained using supervised learning. In this case the training data
-will be the (question, answer) pair itself. Or it might be trained using $X$
-reinforcement learning, in which case the question is, ‘ 
+% - Assume more knowledge?
+% - The output of the tree is training data for the agent?
 
+% - Suppose you want to answer a question and the answer to the question will
+% serve as training data to train agent $X$.
+% - $X$ might be trained using supervised learning. In this case the training data
+% will be the (question, answer) pair itself. Or it might be trained using $X$
+% reinforcement learning, in which case the question is, ‘
 
-- Suppose you want to train an agent $X$ to give a solution to problem $p$.
-- If you want to train $X$ using supervised learning (SL), you ask yourself
-($q$): ‘What is the solution to $p$?’ You answer ($a$): ‘The solution is $s$.’
-$(p, s)$ is the training datum for $X$.
+- IDA has been explained in other places \parencite{CotrIDA, ESSMLPIDA}.
+- In order to write clearly I need the notion of a tree and amplification
+without distillation. This doesn't exist in other places.
+
+- Suppose you want to train an assistant $X$ to give a solution to problem $p$.
+- If you want to train $X$ using supervised learning (SL), you ask yourself:
+‘What is the solution to $p$?’ You answer: ‘The solution is $s$.’ $(p, s)$
+is the training datum for $X$.
 - If you want to train $X$ using reinforcement learning (RL), $X$ has to suggest
-a solution $s$, then you ask yourself ($q$): ‘What reward should I give $X$ for
-solution $s$ to problem $p$?’ You answer ($a$): ‘The reward should be $r$’. $r$
+a solution $s$, then you ask yourself: ‘What reward should I give $X$ for
+solution $s$ to problem $p$?’ You answer: ‘The reward should be $r$’. $r$
 is the training datum for $X$.
 - So you, the overseer, are always given a question and you must return an
 answer.
@@ -96,11 +105,11 @@ answer.
 - There comes a point when $X$ can solve all the problems that you can solve.
 But you want it to solve harder problems, for which you can't answer the
 question. What do you do? You break the question down into a tree of
-sub-questions. Every time you hit a hard question, you branch out. This tree
-grows by adding sub-questions and from these branches sub-answers flow back up.
-The further we go towards the leaves, the easier the questions get and the leaf
-questions are so easy that we can answer them without breaking them down
-further.
+sub-questions. (For examples of trees, see \textcite{StuhFacCog}.) Every time
+you hit a hard question, you branch out. This tree grows by adding sub-questions
+and from these branches sub-answers flow back up. The further we go towards the
+leaves, the easier the questions get and the leaf questions are so easy that we
+can answer them without breaking them down further.
 - This is iterated amplification.
 
 - It's tedious to do all this breaking down though. What if you had an
@@ -132,23 +141,23 @@ learner to recognize right from wrong.
 - [In fact, when the problems are complex, you can't provide every possible
 problem and solution to $X^n$. So it needs to recognize concepts.]
 - The goal of the Farlamp project is to find out how the training algorithm
-
+influences the failure rate.
 
 TODO: Make sure that this terminology is consistent with Pauls other work and
 CotrIDA.
 
-- Too much! I have to start with assuming an understanding of IDA. Nah, someone
-who doesn't know it would have to read the whole of Factored Cognition instead
-of three paragraphs here.
+% - Too much! I have to start with assuming an understanding of IDA. Nah, someone
+% who doesn't know it would have to read the whole of Factored Cognition instead
+% of three paragraphs here.
 
-- Iterated distillation and amplification (IDA) is a scheme for an overseer to
-continue providing training input for the agent after it becomes as capable as
-the overseer. If you don't know how it works, read \textcite{CotrIDA} before you
-continue here.
-- Iterated amplification is similar, except that the overseer doesn't train
-assistants. It just makes copies of itself
+% - Iterated distillation and amplification (IDA) is a scheme for an overseer to
+% continue providing training input for the agent after it becomes as capable as
+% the overseer. If you don't know how it works, read \textcite{CotrIDA} before you
+% continue here.
+% - Iterated amplification is similar, except that the overseer doesn't train
+% assistants. It just makes copies of itself
 
-- Why is this so damn hard to describe clearly?
+% - Why is this so damn hard to describe clearly?
 
 
 \subsection{Providing and evaluating answers}
