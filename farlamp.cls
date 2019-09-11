@@ -6,6 +6,7 @@
 
 \RequirePackage{bookmark}
 \RequirePackage{xurl}
+\RequirePackage{ragged2e}
 
 \RequirePackage{unicode-math}
 \defaultfontfeatures{Scale=MatchLowercase}
@@ -66,9 +67,9 @@
 \newcommand*{\blx@nowarnpolyglossia}{\relax}
 
 % Load polyglossia as late as possible: uses bidi with RTL langages (e.g. Hebrew, Arabic)
-\RequirePackage{csquotes}
 \RequirePackage{polyglossia}
 \setmainlanguage[variant=british]{english}
+\RequirePackage[english=british]{csquotes}
 
 \RequirePackage[
     style=authoryear-comp,

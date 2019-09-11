@@ -62,13 +62,14 @@ that trains the assistant to become more capable.
 
 
 \subsection{Iterated amplification and distillation}
+\label{sec:iad}
 
 The overseer alone can only provide data to train the assistant until their
 capabilities are roughly equal. After this the training can be continued by
 using \Term{Iterated distillation and amplification} (IDA). \Term{Distillation}
-is the mechanism by which the the assistant is trained. During
-\Term{amplification} the assistant answers the overseer's questions to help it
-generate higher-level training data.
+is the mechanism by which the assistant is trained. During \Term{amplification}
+the assistant answers the overseer's questions to help it generate higher-level
+training data.
 
 IDA has been explained in other places \parencite{CotrIDA, ESSMLPIDA}. But in
 order to write this analysis clearly I need the notion of amplification without
@@ -211,56 +212,66 @@ ReAmp.
 \section{Predictions}
 \label{sec:prediction}
 
-I expect that there is a threshold. If the overseer's failure probability is
-above that threshold, IDA increases the overall failure probability. If the
-overseer's failure probability is below the threshold, IDA decreases the overall
-failure probability. \textcite{ChriRelAmp} might have expressed this before, but
-I don't quite understand the relevant sections.
+Based on the previous sections I expect that if the overseer's failure
+probability is above a certain threshold $\hat{p}$ (call it the failure
+tolerance), IDA increases the overall failure probability. If the overseer's
+failure probability is below the threshold, IDA decreases the overall failure
+probability. \textcite{ChriRelAmp} might have expressed this before, but I don't
+quite understand the relevant sections.
 
-And I expect that the threshold depends on a few parameters, such as whether $H$
-is deterministic and how $X$ is trained. I tried to predict in which direction
-each parameter pushes the threshold, but so far my ideas have led me into the
-fog, because I know too little about the details of SL and RL.
+I expect that the threshold depends on a few parameters, such as whether $H$ is
+deterministic and how $X$ is trained. I tried to predict in which direction each
+parameter pushes the threshold. But so far my ideas have led me into the fog,
+because I know too little about the details of SL and RL.
 
 For example, \textcite{ChriRelAmp} reasons: ‘if the overseer fails with
 probability $1 \%$, then this only changes the reward function by 0.01, and an
-RL agent should still avoid highly undesirable actions’ Can't the same be said
+RL agent should still avoid highly undesirable actions’. Can't the same be said
 for SL? If only $1 \%$ of the training data for $X$ are wrong, won't it treat
 them as outliers, provided enough regularization?
 
 Note that \textcite{ChriRelAmp} doesn't state anything about SL. He only
-predicts that distillation by IL will decrease reliability. I imagine IL closer
-to a lookup table than to a concept learner, so it makes sense that it will
-replicate $H$'s failures. But a lookup table wouldn't hold the amount of
-possible of the tasks in \textcite{CSASupAmp} anyway.
+predicts that distillation by imitation learning (IL) will lower reliability. I
+imagine IL similar to a lookup table, so it makes sense that it will replicate
+$H$'s failures (see sec. \ref{sec:iad}). But a lookup table would not be able
+hold all of the possible input-output pairs of the tasks in \textcite{CSASupAmp}
+anyway. Instead, the learning algorithm needs to ‘understand’ what the tasks are
+about. This in turn makes it more likely to discard faulty data from the
+overseer.
 
-I do think that non-determinism will result in a greater failure blow-up
-threshold, because a randomly wrong label will be overridden later by the
-correct one. Conversely a overseer would repeatedly give the learner the same
-wrong label. One might argue such repetitions are rare if the domain is large.
-But the domains start out fairly small in the training schedule of
-\textcite{CSASupAmp}. And the start is where the foundation for the rest of the
-training is laid. If this foundation is faulty, correct results cannot be built.
+I do think the failure tolerance $\hat{p}$ will be greater with a
+non-deterministic overseer than with a deterministic one. Because in the former
+case a randomly wrong training datum will be overriden by a correct one, but in
+the latter the wrong datum would be repeated – hammered in, so to say. One might
+argue that such repetitions are rare if the domain is large. But the domains
+start out fairly small in the training schedule of \textcite{CSASupAmp}. And the
+start is where the foundation for the rest of the training is laid. If this
+foundation is faulty, correct results cannot be built.
 
 
 \section{Experiments}
 
 I want to measure the overall failure rate of SupAmp and ReAmp, given various
-overseer failure rates, a non-deterministic and a deterministic overseer, and
-perhaps different degrees of regularization. I will decide the details later.
+overseer failure rates and maximum question heights, a non-deterministic and a
+deterministic overseer, and perhaps different degrees of regularization. I will
+decide the details later.
 
 In the non-deterministic case overseer failure can be modelled by injecting a
-random answer (SupAmp) or random evaluation (ReAmp) into the output of $H'$ with
-a certain probability. One might think that $H$ should fail, because it is the
-actual overseer and $H'$ its imitation. But that would just degrade the learning
-performance of $H'$ and not deliver randomly wrong training inputs to $X$ as
-required.
+random solution (SupAmp) or random evaluation (ReAmp) into the output of $H'$
+with a certain probability. One might think that not $H'$, but $H$ should fail,
+because the former is the actual overseer and the latter its imitation. But this
+would just degrade the learning performance of $H'$ and not deliver randomly
+wrong training inputs to $X$ as required.
 
-The deterministic case is similar, except that a small fixed set of inputs must
-be mapped to fixed random outputs. This can be achieved with a lookup table or
-by hashing the input to provide a fail/no fail value and in the former case
-hashing them again to get the random-but-fixed output.
+The deterministic case is similar, except that a small fixed set of inputs to
+$H'$ must be mapped to fixed random outputs. This can be done with a lookup
+table. Or by hashing the input to provide a fail/no fail value and in the ‘fail’
+case obtaining a fixed random output by hashing again.
 
 
+\begin{FlushLeft}
+% Couldn't find out within reasonable time how to make the formatting of titles
+% uniform.
 \printbibliography
+\end{FlushLeft}
 \end{document}
