@@ -23,15 +23,15 @@ repository.})
 
 Capability amplification can cause the failure rate of an ML system to blow up,
 even when the amplified agent fails rarely. To fix this, reliability
-amplification can be used. Alternatively, to keep the failure rate down and even
+amplification may be used. Alternatively, to keep the failure rate down and even
 decrease it below the agent's, distillation by reinforcement learning (RL) might
 prove sufficient. However, whether the result will be reliable enough, we don't
 know.~\parencite{ChriRelAmp} But we do need to know in high-stakes situations
 \parencite[see][]{ChriLearnCata}.
 
-If RL alone is enough, we can avoid the computational and design overhead of
+If RL alone is sufficient, we can avoid the computational and design overhead of
 reliability amplification. Therefore, I'm planning to adapt to RL the iterated
-distillation and amplification scheme from \textcite{CSASupAmp} (See also:
+distillation and amplification scheme from \textcite{CSASupAmp}. (See also:
 \href{https://github.com/rmoehn/farlamp/raw/master/supamp-reamp.pdf}{How to turn
 SupAmp into ReAmp?}) Once adapted, I can investigate what overall failure rates
 result from various overseer failure rates and other learning parameters.
@@ -44,90 +44,88 @@ open questions on the way to implementation.
 \section{Concepts}
 
 Before I can write about my predictions, what experiments to run and how to
-implement them, I will pin down some terms (bold) and concepts.
-
+implement them, I will pin down some terms and concepts.
 
 % Why am I writing all this? Because it hasn't been laid out clearly before.
 % Paul introduces the problem alright, but he assumes a lot of knowledge about
 % IDA and why he's talking about amplification at one point and adds in learning
 % algorithms at another.
 
+
 \subsection{General terms}
 
 In the following, being more \Term{capable} means being able to answer harder
 questions. The \Term{overseer} is a human or some extract of human judgment. The
-\Term{assistant} is a machine learning (sub-)system. The assistant can answer
-the overseer's questions. And the overseer can give data to the algorithm
+\Term{assistant} is a machine learning (sub-)system, which can answer the
+overseer's questions. In reverse, the overseer can give data to the algorithm
 that trains the assistant to become more capable.
 
 
 \subsection{Iterated amplification and distillation}
 \label{sec:iad}
 
-The overseer alone can only provide data to train the assistant until their
-capabilities are roughly equal. After this the training can be continued by
-using \Term{Iterated distillation and amplification} (IDA). \Term{Distillation}
-is the mechanism by which the assistant is trained. During \Term{amplification}
-the assistant answers the overseer's questions to help it generate higher-level
-training data.
+The overseer alone can only provide data to train the assistant until the
+capabilities of the two are roughly equal. After this the training can be
+continued by using \Term{Iterated distillation and amplification} (IDA).
+\Term{Distillation} is the mechanism by which the assistant is trained. During
+\Term{amplification} the assistant answers the overseer's questions to help it
+generate higher-level training data.
 
 IDA has been explained in other places \parencite{CotrIDA, ESSMLPIDA}. But in
 order to write this analysis clearly I need the notion of amplification without
 immediate distillation. For this I don't know of any brief explanation, so I've
-written one.
+written one:
 
 Suppose you are an overseer $H$ who wants to train an assistant $X$
 \parencite[symbols taken from][]{CSASupAmp} to give a solution to problem $p$.
 If you want to train $X$ using supervised learning (SL), you ask yourself: ‘What
 is the solution to $p$?’ You answer: ‘The solution is $s$.’ Then $(p, s)$ is the
-training datum for $X$.
-
-If you want to train $X$ using reinforcement learning, $X$ has to suggest a
-solution $s$, then you ask yourself: ‘What reward should I give $X$ for solution
-$s$ to problem $p$?’ You answer: ‘The reward should be $r$’. Then $(p, s, r)$ is
-the training datum for $X$.
+training datum for $X$. If you want to train $X$ using reinforcement learning,
+$X$ has to suggest a solution $s$, then you ask yourself: ‘What reward should I
+give $X$ for solution $s$ to problem $p$?’ You answer: ‘The reward should be
+$r$.’ Then $(p, s, r)$ is the training datum for $X$.
 
 After some time, $X$ can solve all the problems that you can solve. But you want
 it to become able to solve harder problems, for which you alone can't answer the
 question and therefore can't provide training data. What do you do? You break
 the question down into sub-questions. These branch out into sub-sub-questions
-and so forth, forming a tree. The further we go towards the leaves, the easier
-the questions become. The leaf questions are so easy that we can answer them
-without breaking them down further. Then the answers flow upwards and are
-combined at each node until we obtain the root answer, the missing piece of the
-training datum $(p, s)$ or $(p, s, r)$ for $X$. This is \Term{iterated
-amplification} (IA), without distillation. (For examples of trees, see
-\textcite{StuhFacCog}.)
+and so forth, forming a tree. The further you go towards the leaves, the easier
+the questions become. The leaf questions are so easy that you can answer them
+without breaking them down. Then the answers flow upwards and are combined at
+each node until you obtain the root answer, the missing piece of the training
+datum $(p, s)$ or $(p, s, r)$ for $X$. This is \Term{iterated amplification}
+(IA), without distillation. (For examples of trees, see \textcite{StuhFacCog}.)
 
-However, this breaking down of questions is computationally expensive. What if
-you had an assistant \X{-1} that is almost as capable as $X$? Then you could
-break down only the top-level question into sub-questions, have them answered by
-\X{-1}, and use these sub-answers to answer the root question. Again you've
-obtained a training datum for $X$.
+However, this breaking down of questions is computationally expensive. To make
+it cheaper, imagine you had an assistant \X{-1} that is almost as capable as
+$X$. Then you could break down only the top-level question into sub-questions,
+have them answered by \X{-1}, and use these sub-answers to answer the root
+question. Again you've obtained a training datum for $X$.
 
-This would be the first iteration of iterated \Term{distillation} and
+This corresponds to the first iteration of iterated \Term{distillation} and
 amplification: You train an agent \X{0} until it is roughly as capable as you.
-The combination of you and the agent forms a more capable compound agent
-\HX{0}. Then \HX{0} generates data to train the next agent \X{1}, which is
-more capable than \X{0}. This is called ‘distilling’ \HX{0}. Now you can team
-up with \X{1} to become \HX{1} and generate data to train \X{2}. And so on.
+The combination of you and the agent forms a more capable compound agent \HX{0}.
+Then \HX{0} generates data to train the next agent \X{1}, which is more capable
+than \X{0}. This is called ‘distilling’ \HX{0}. Now you can team up with \X{1}
+to become \HX{1} and generate data to train \X{2}. And so on.
 
 Now we add \Term{failure}. It's natural that you sometimes make a mistake and
-return a wrong answer. Suppose you're doing IA. And a wrong sub-answer anywhere
-in the tree leads to the root answer being wrong. And each non-leaf question
-leads to at least two sub-questions. Then even if your failure probability is
-very small, the probability of ending up with a wrong root answer approaches 1
-exponentially quickly in the height of the tree.~\parencite{ChriRelAmp}
+return a wrong answer. What happens with IA? Assume that a wrong sub-answer
+anywhere in the tree leads to the root answer being wrong, and each non-leaf
+question leads to at least two sub-questions. Then even if your failure
+probability is very small, the probability of ending up with a wrong root answer
+approaches 1 exponentially quickly in the height of the
+tree.~\parencite{ChriRelAmp}
 
-What happens with I\emph{D}A isn't so clear. It depends on how the $X^n$ are
+In contrast, the case of I\emph{D}A isn't clear. It depends on how the $X^n$ are
 trained. If the training algorithm causes them to faithfully copy all your
 answers, the failure probability will compound as in IA. But if the training
 algorithm makes the $X^n$ good at ‘recognizing concepts’, they will treat some
 wrong inputs as outliers and the failure probability won't compound as quickly,
-or will even go down as $n$ grows. Of course, the more mistakes you make, the
-harder it becomes for a learner to tell apart right and wrong. The goal of the
-Farlamp project is to find out how the training algorithm influences the failure
-rate.
+or it might even go down as $n$ grows. Of course, the more mistakes you make,
+the harder it becomes for a learner to tell apart right and wrong. The goal of
+the Farlamp project is to find out how the training algorithm influences the
+failure rate.
 
 
 \subsection{Overseer determinism and non-determinism}
@@ -139,13 +137,13 @@ with a certain probability.
 
 I can't rule out either way. While I tend to deduce non-determinism from the
 overseer model in \textcite{ChriRelAmp}, this deduction is countered by the
-section on sequential decision-making. Further, there are realistic examples of
-both ways: If the overseer is a learned agent, as $H'$ in \textcite{CSASupAmp},
-it is mostly deterministic. Granted, the answers of $H'$ change over time,
-because it is trained continuously on data from $H$. But I expect it to converge
-on determinism. If the overseer is a human, as in Ought's factored evaluation
-experiments \parencite{StuhDelCog}, it is non-deterministic. Although
-determinism can again result if the human output is automated
+section on sequential decision-making in the same article. Further, there are
+realistic examples of both ways: If the overseer is a learned agent, as $H'$ in
+\textcite{CSASupAmp}, it is mostly deterministic. Granted, the answers of $H'$
+change over time, because it is trained continuously on data from $H$. But I
+expect it to converge on determinism. If the overseer is a human, as in Ought's
+factored evaluation experiments \parencite{StuhDelCog}, it is non-deterministic.
+Although determinism can again result if the human output is automated
 \parencite[see][sec. ‘Caching’ f.]{StuhTaxCapAmp}.
 
 % Why I tend to deduce non-determinism:
@@ -180,11 +178,9 @@ from \textcite[app. C]{CSASupAmp}.
 \begin{definition}[Height of a question] By recursion:
     \begin{enumerate}
     \item Primitive questions have height 0.
-    \item A question has height $n$ if $n-1$ is the maximum height of a
-        sub-question asked by $H$ to generate a response.
+    \item A question has height $n$ if $n-1$ is the maximum height of the
+        sub-questions it is decomposed into.
     \end{enumerate}
-The response will be an answer in the case of SupAmp and a reward in the case of
-ReAmp.
 \end{definition}
 
 \begin{example}
@@ -217,32 +213,32 @@ probability is above a certain threshold $\hat{p}$ (call it the failure
 tolerance), IDA increases the overall failure probability. If the overseer's
 failure probability is below the threshold, IDA decreases the overall failure
 probability. \textcite{ChriRelAmp} might have expressed this before, but I don't
-quite understand the relevant sections.
+completely understand the relevant sections.
 
 I expect that the threshold depends on a few parameters, such as whether $H$ is
 deterministic and how $X$ is trained. I tried to predict in which direction each
 parameter pushes the threshold. But so far my ideas have led me into the fog,
 because I know too little about the details of SL and RL.
 
-For example, \textcite{ChriRelAmp} reasons: ‘if the overseer fails with
+For example, \textcite{ChriRelAmp} states: ‘if the overseer fails with
 probability $1 \%$, then this only changes the reward function by 0.01, and an
 RL agent should still avoid highly undesirable actions’. Can't the same be said
 for SL? If only $1 \%$ of the training data for $X$ are wrong, won't it treat
 them as outliers, provided enough regularization?
 
 Note that \textcite{ChriRelAmp} doesn't state anything about SL. He only
-predicts that distillation by imitation learning (IL) will lower reliability. I
-imagine IL similar to a lookup table, so it makes sense that it will replicate
-$H$'s failures (see sec. \ref{sec:iad}). But a lookup table would not be able
-hold all possible input-output pairs of the tasks in \textcite{CSASupAmp}
-anyway. Instead, the learning algorithm needs to ‘understand’ what the tasks are
-about. This in turn makes it more likely to discard faulty data from the
-overseer.
+predicts that distillation by imitation learning (IL) will lower reliability.
+Since I imagine IL to be similar to a lookup table, it makes sense that it will
+replicate $H$'s failures (see sec. \ref{sec:iad}). But a lookup table would not
+be able hold all possible input/output pairs of the tasks in
+\textcite{CSASupAmp} anyway. Instead, the learning algorithm needs to
+‘understand’ what the tasks are about. This in turn makes it more likely to
+discard faulty data from the overseer.
 
 I do think the failure tolerance $\hat{p}$ will be greater with a
 non-deterministic overseer than with a deterministic one. Because in the former
-case a randomly wrong training datum will be overridden by a correct one, but in
-the latter the wrong datum would be repeated – hammered in, so to say. One might
+case a randomly wrong training datum can be overridden by a correct one, but in
+the latter the wrong datum will be repeated – hammered in, so to say. One might
 argue that such repetitions are rare if the domain is large. But the domains
 start out fairly small in the training schedule of \textcite{CSASupAmp}. And the
 start is where the foundation for the rest of the training is laid. If this
@@ -256,7 +252,7 @@ overseer failure rates and maximum question heights, a non-deterministic and a
 deterministic overseer, and perhaps different degrees of regularization. I will
 decide the details later.
 
-In the non-deterministic case overseer failure can be modelled by injecting a
+In the non-deterministic case, overseer failure can be modelled by injecting a
 random solution (SupAmp) or random evaluation (ReAmp) into the output of $H'$
 with a certain probability. One might think that not $H'$, but $H$ should fail,
 because the former is the actual overseer and the latter its imitation. But this
