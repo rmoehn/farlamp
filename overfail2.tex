@@ -87,7 +87,7 @@ solution $s$, then you ask yourself: ‘What reward should I give $X$ for soluti
 $s$ to problem $p$?’ You answer: ‘The reward should be $r$’. Then $(p, s, r)$ is
 the training datum for $X$.
 
-After some time $X$ can solve all the problems that you can solve. But you want
+After some time, $X$ can solve all the problems that you can solve. But you want
 it to become able to solve harder problems, for which you alone can't answer the
 question and therefore can't provide training data. What do you do? You break
 the question down into sub-questions. These branch out into sub-sub-questions
@@ -133,13 +133,13 @@ rate.
 \subsection{Overseer determinism and non-determinism}
 
 The overseer might behave and fail deterministically or non-deterministically.
-Ie. it might have a fixed output for each input, and thus the same failures for
+Ie.\ it might have a fixed output for each input, and thus the same failures for
 a specific set of inputs. Or it might return a random value for any input,
 with a certain probability.
 
 I can't rule out either way. While I tend to deduce non-determinism from the
 overseer model in \textcite{ChriRelAmp}, this deduction is countered by the
-section on sequential decision making. Further, there are realistic examples of
+section on sequential decision-making. Further, there are realistic examples of
 both ways: If the overseer is a learned agent, as $H'$ in \textcite{CSASupAmp},
 it is mostly deterministic. Granted, the answers of $H'$ change over time,
 because it is trained continuously on data from $H$. But I expect it to converge
@@ -172,7 +172,7 @@ determinism can again result if the human output is automated
 \subsection{Height of a question}
 
 This property might become useful later in the process. The height of a
-question is the hight of the tree the question would be decomposed into if
+question is the height of the tree the question would be decomposed into if
 iterated amplification was used. The following definition doesn't depend on
 trees and iterated amplification, but it uses the notion of primitive questions
 from \textcite[app. C]{CSASupAmp}.
@@ -234,14 +234,14 @@ Note that \textcite{ChriRelAmp} doesn't state anything about SL. He only
 predicts that distillation by imitation learning (IL) will lower reliability. I
 imagine IL similar to a lookup table, so it makes sense that it will replicate
 $H$'s failures (see sec. \ref{sec:iad}). But a lookup table would not be able
-hold all of the possible input-output pairs of the tasks in \textcite{CSASupAmp}
+hold all possible input-output pairs of the tasks in \textcite{CSASupAmp}
 anyway. Instead, the learning algorithm needs to ‘understand’ what the tasks are
 about. This in turn makes it more likely to discard faulty data from the
 overseer.
 
 I do think the failure tolerance $\hat{p}$ will be greater with a
 non-deterministic overseer than with a deterministic one. Because in the former
-case a randomly wrong training datum will be overriden by a correct one, but in
+case a randomly wrong training datum will be overridden by a correct one, but in
 the latter the wrong datum would be repeated – hammered in, so to say. One might
 argue that such repetitions are rare if the domain is large. But the domains
 start out fairly small in the training schedule of \textcite{CSASupAmp}. And the
