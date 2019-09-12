@@ -60,7 +60,7 @@ while in the original there are four. This is because the original trains $X$
 
 In SupAmp the learning process builds on questions that $H$ can answer without
 asking $X$ sub-questions. Here it builds on question/answer pairs that $H$ can
-*evaluate* without asking $X$ sub-questions. Cf. [@StuhDelCog]. $H$ can always
+*evaluate* without asking $X$ sub-questions. (See [@StuhDelCog].) $H$ can always
 ask primitive questions, because they don't depend on $X$.
 
 - \OQ If the number $l$ of sub-questions is fixed, does $H$ ask blank
