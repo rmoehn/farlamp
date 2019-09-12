@@ -4,8 +4,11 @@ BUILD_P=build
 SOURCE_NAME=supamp-reamp
 
 mkdir -p $BUILD_P
+
+grep -v '^ *%' references.bib >$BUILD_P/pandoc-references.bib
+
 pandoc $SOURCE_NAME.md \
-    --bibliography references.bib --filter pandoc-citeproc \
+    --bibliography $BUILD_P/pandoc-references.bib --filter pandoc-citeproc \
     --csl=frontiers.csl \
     --include-in-header preamble.tex \
     -f markdown+yaml_metadata_block+simple_tables \
