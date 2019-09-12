@@ -1,0 +1,59 @@
+\documentclass{farlamp}
+
+% latexmk -pvc -pdfxe -bibtex -interaction=nonstopmode -outdir=build draft-basis.tex
+
+\addbibresource{references.bib}
+
+\subject{Draft Basis}
+\title{What I need for the Farlamp draft}
+\author{Richard Möhn}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+The questions are adapted from \textcite[p. 175]{CoR}. Some of the section
+headings quote the chapter titles in that book.
+
+\section{Readers}
+
+\begin{itemize}
+\item Who are my readers?
+\item What do they know?
+\item Why should they care about my problem?
+\end{itemize}
+
+\section{Ethos}
+
+What kind of ethos or character do I want to project?
+
+\section{Question and answer}
+
+Sketch my question and its answer in two or three sentences.
+
+\section{Reasons and evidence}
+
+Sketch the reasons and evidence supporting my claim.
+
+\section{Acknowledgements and responses}
+
+\begin{itemize}
+\item What questions, alternatives and objections are my readers likely to
+    raise?
+\item How do I respond to them?
+\end{itemize}
+
+\section{Warrants}
+
+\begin{itemize}
+\item When may my readers not see the relevance of a reason to a claim?
+\item Can I state the warrant that connects them?
+\end{itemize}
+
+
+\begin{FlushLeft}
+% Couldn't find out within reasonable time how to make the formatting of titles
+% uniform.
+\printbibliography
+\end{FlushLeft}
+\end{document}
