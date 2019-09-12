@@ -1,6 +1,8 @@
 # Farlamp
 
-Project definition:
+BLUF: Read [Overseer failures in SupAmp and ReAmp](overfail2.pdf).
+
+Project definition (CoR):
 
 ```
 I'm studying the impact of overseer failure on RL-based IDA,
@@ -15,9 +17,11 @@ In this project I will:
 
 1. Take the implementation of iterated distillation and amplification from
    Christiano et al.'s ‘Supervising strong learners by amplifying weak experts’
-   and adapt it to reinforcement learning. It's using supervised learning now.
-2. Introduce overseer failures and see how they impact the overall failure rate.
-3. Write a paper a
+   and adapt it to reinforcement learning. (It is using supervised learning
+   now.)
+2. Introduce overseer failures and see how they influence the overall failure
+   rate.
+3. Write a paper about the results.
 
 [Overseer failures in SupAmp and ReAmp](overfail2.pdf) contains a more extensive
 introduction, as well as an explanation of the relevant terms, concepts etc.
@@ -30,13 +34,13 @@ introduction, as well as an explanation of the relevant terms, concepts etc.
 - [How to turn SupAmp into ReAmp?](supamp-reamp.pdf) – Less detailed and less
   polished analysis of how to approach the first project phase.
 - [What I need for the Farlamp draft](draft-basis.pdf) – Will contain all the
-  information I need for planning a draft.
+  information I need for planning a draft of the paper.
 - [Project outline](farlamp-plan.pdf) – Overview of iterations, tasks,
   estimates, deadlines and status.
 
-The other files are only useful for me. The code won't be published here,
-because it will be based on the code from CSASupAmp, which underlies some strict
-publication policy.
+There are more files, but they are only useful for me. The code won't be
+published here, because it will be based on the code from CSASupAmp, which
+underlies some strict publication policy.
 
 
 ## Glossary
@@ -57,6 +61,8 @@ publication policy.
 | SL            | supervised learning
 | SupAmp        | The system from CSASupAmp for iterated distillation and amplification using supervised learning
 
+For detailed bibliographical information see [references.bib](references.bib).
+
 
 ## Thanks
 
@@ -68,4 +74,4 @@ CSASupAmp code.
 
 ## Licence
 
-See [LICENSE.txt].
+See [LICENSE.txt](LICENSE.txt).
