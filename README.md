@@ -33,8 +33,8 @@ introduction, as well as an explanation of the relevant terms, concepts etc.
   the most polished document so far.
 - [How to turn SupAmp into ReAmp?](supamp-reamp.pdf) – Less detailed and less
   polished analysis of how to approach the first project phase.
-- [What I need for the Farlamp draft](draft-basis.pdf) – Will contain all the
-  information I need for planning a draft of the paper.
+- [What I need for planning the Farlamp draft](draft-basis.pdf) – Will contain
+  all the information I need for planning a draft of the paper.
 - [Project outline](farlamp-plan.pdf) – Overview of iterations, tasks,
   estimates, deadlines and status.
 

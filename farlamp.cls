@@ -40,7 +40,7 @@
 
 %\setlength{\emergencystretch}{3em} % prevent overfull lines
 
-\setcounter{secnumdepth}{5}
+\setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 
 % Credits: https://en.wikibooks.org/wiki/LaTeX/Footnotes_and_Margin_Notes#Margin_Notes
