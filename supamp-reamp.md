@@ -9,7 +9,7 @@ toc: True
 
 title: "How to turn SupAmp into ReAmp?"
 author: Richard Möhn
-date: 2019-08-30
+date: 2019-09-12
 reference-section-title: References
 ---
 
