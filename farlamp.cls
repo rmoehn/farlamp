@@ -48,6 +48,9 @@
 \newcommand*{\OQ}{\marginnote{\textsc{oq}}}
 \newcommand*{\TODO}{\marginnote{\textsc{todo}}}
 
+% Because ✔ isn't getting printed and it's taking me too long to make it work.
+\newcommand*{\done}{\textsc{done}}
+
 % Credits: https://tex.stackexchange.com/a/21229/195421
 \RequirePackage{amsthm}
 \theoremstyle{definition}
@@ -71,6 +74,9 @@
 \setmainlanguage[variant=british]{english}
 \RequirePackage[english=british]{csquotes}
 
+\MakeAutoQuote{‘}{’}
+\MakeAutoQuote*{“}{”}
+
 \RequirePackage[
     style=authoryear-comp,
     maxcitenames=1,
@@ -78,3 +84,17 @@
     date=year,
     urldate=iso
 ]{biblatex}
+
+% Credits: https://tex.stackexchange.com/a/126245/195421
+\makeatletter
+\DeclareCiteCommand{\fullcite}
+  {\defcounter{maxnames}{\blx@maxbibnames}%
+    \usebibmacro{prenote}}
+  {\usedriver
+     {\DeclareNameAlias{sortname}{default}}
+     {\thefield{entrytype}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+\makeatother
+
+\newcommand*{\annotitem}[1]{\addtocategory{annotated}{#1}\paragraph{\fullcite{#1}}}
