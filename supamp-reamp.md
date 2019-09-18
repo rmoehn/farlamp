@@ -75,8 +75,9 @@ ask primitive questions, because they don't depend on $X$.
   the authors of [@CSASupAmp] want it to come up with structures more efficient
   than recursive questions. But this limits capability, doesn't it? I suspect
   that at some point feeding questions to oneself is necessary to become more
-  intelligent.
-
+  intelligent. Then the question becomes: when and when not to decompose? See
+  [@CSASumpAmp, p. 6 ‘Recursive model architectures’] for going deeper into
+  this.
 
 ## Determining the rewards
 
