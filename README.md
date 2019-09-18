@@ -35,6 +35,8 @@ introduction, as well as an explanation of the relevant terms, concepts etc.
   polished analysis of how to approach the first project phase.
 - [What I need for planning the Farlamp draft](draft-basis.pdf) – Will contain
   all the information I need for planning a draft of the paper.
+- [Literature overview](literature.pdf) – Work in progress of searching,
+  skimming, filtering, summarizing literature for this project.
 - [Project outline](farlamp-plan.pdf) – Overview of iterations, tasks,
   estimates, deadlines and status.
 
