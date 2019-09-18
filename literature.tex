@@ -1,17 +1,97 @@
 \documentclass{farlamp}
 
+% latexmk -pvc -pdfxe -bibtex -interaction=nonstopmode -outdir=build literature.tex
+
+\addbibresource{references.bib}
+\DeclareBibliographyCategory{annotated}
+
+\author{Richard Möhn}
+\date{\today}
+
 \title{Literature overview}
 
 \begin{document}
-
 \maketitle
+\tableofcontents
 
-\section{To read}
+\section{To search}
 
 \begin{itemize}
     \item What has Paul written about RL-based IDA?
     \item How are rewards determined in RL?
+    \item See todos in SupAmp-ReAmp and Overfail2
+    \item \done\ \href{https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=supervising+strong+learners+by+amplifying+weak+experts&btnG=}{Search
+        backward from \textcite{CSASupAmp} on Google Scholar}
+\end{itemize}
+
+
+\section{Potential sources}
+
+\begin{itemize}
+    \item Todos in SupAmp-ReAmp and Overfail2
+    \item Possibly relevant works citing \textcite{CSASupAmp}, according to
+        Google Scholar:
+        \begin{itemize}
+            \item \href{https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=supervising+strong+learners+by+amplifying+weak+experts&btnG=}{Backward search on Google Scholar}
+            \item \href{https://arxiv.org/abs/1906.08663}{Modeling AGI Safety Frameworks
+                with Causal Influence Diagrams}
+            \item \href{https://arxiv.org/abs/1906.10189}{Evolutionary
+                Computation and AI Safety: Research Problems Impeding Routine
+                and Safe Real-world Application of Evolution}
+            \item \href{https://www.mdpi.com/2504-2289/3/2/21}{Multiparty
+                Dynamics and Failure Modes for Machine Learning and Artificial
+                Intelligence}
+            \item \href{https://arxiv.org/abs/1906.01820}{Risks from Learned Optimization in Advanced Machine Learning Systems}
+        \end{itemize}
+\end{itemize}
+
+
+\section{To skim and decide}
+
+\begin{itemize}
+\item Resources from \textcite{CSASupAmp} that I've marked with a blue cross.
+\item
+    \href{https://ai-alignment.com/semi-supervised-reinforcement-learning-cf7d5375197f}{Semi-supervised reinforcement learning}
+\item \href{https://arxiv.org/abs/1811.07871}{Scalable agent alignment via
+    reward modeling: a research direction}
+\end{itemize}
+
+
+\section{To (re-)read}
+
+\begin{itemize}
     \item \cite{ChriREngP}
     \item \cite{ChriThoRewE}
 \end{itemize}
+
+
+\section{Annotated bibliography}
+
+\begin{displayquote}[{\cite[p. 102 f.]{CoR}}]
+    Often the assembling of an annotated bibliography is a distinct stage in a
+    research process […]. Each annotation is an opportunity to evaluate the
+    credibility of a source, summarize its argument, and explain its relevance
+    to your project.
+
+    […] If you can't summarize your sources or explain their relevance, you are
+likely not ready to write your paper.
+\end{displayquote}
+
+\annotitem{ChriRelAmp}
+TODO: Copy summary from notes and clean up. Add relevance.
+
+\annotitem{CSASupAmp}
+TODO: Copy summary from notes and clean up. Add relevance.
+
+
+\begin{FlushLeft}
+    \printbibliography[notcategory=annotated]
+\end{FlushLeft}
 \end{document}
+
+
+% NEXT:
+% - List more sources. – From from Google Scholar, actually from all the points
+%   above. They're not fully expanded yet.
+% - For each source, decide when it makes sense to read it. Much of it only
+%   makes sense after I've learned more about ML.
