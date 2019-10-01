@@ -16,9 +16,9 @@ I'm studying the impact of overseer failure on RL-based IDA,
 In this project I will:
 
 1. Take the implementation of iterated distillation and amplification from
-   Christiano et al.'s ‘Supervising strong learners by amplifying weak experts’
-   and adapt it to reinforcement learning. (It is using supervised learning
-   now.)
+   Christiano et al.'s [‘Supervising strong learners by amplifying weak
+   experts’](https://arxiv.org/abs/1810.08575) and adapt it to reinforcement
+   learning. (It is using supervised learning now.)
 2. Introduce overseer failures and see how they influence the overall failure
    rate.
 3. Write a paper about the results.
