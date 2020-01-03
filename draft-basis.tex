@@ -88,7 +88,44 @@ Sketch the reasons and evidence supporting my claim. – TBD
 \item How do I respond to them?
 \end{itemize}
 
-TBD
+\begin{itemize}
+    \item \cite{ChriRelAmp} talks about policies being capability-amplified.
+        That sounds like they are the assistants. So shouldn't the project be
+        about assistant failure, rather than overseer failure?
+
+        \Response\ It depends on what ‘amplify’ means, which appears to vary. –
+        In \cite{ChriALBA} it sounds like the overseer is getting amplified, in
+        \cite{ChriCapAmp} it sounds like the assistant is getting amplified, and
+        in \cite{CotrIDA} both the overseer and the assistant are arguments to
+        the \code{Amplify} procedure.
+
+        In the end it doesn't matter for this project. The overseer is a simple
+        procedure that will fail if it gets wrong input from an assistant. So I
+        might as well stick with what I've written so far and situate failures
+        in the overseer.
+
+    \item \cite{ChriRelAmp} assumes assistants that are powerful enough to be
+        able to negotiate with each other. In IDA generally the first assistant
+        is trained to almost human level. (This might be different with low
+        bandwidth overseers \parencite{SaunUndIDAClOv}; I haven't thought it
+        through.) So for distillation we need powerful learning algorithms,
+        which don't exist yet. And in
+        \href{https://github.com/farlamp/overfail2.pdf}{Overseer failures in
+        SupAmp and ReAmp} I predict that failure tolerance depends on the
+        learning algorithm. Then won't the results of this project be irrelevant
+        in a few years (months?), when we have different learning algorithms?
+
+        \Response\ I'm not aiming to document the response of specific learning
+        algorithms to overseer failure. Rather, I'm testing the hypothesis that
+        failure tolerance depends on various parameters, such as learning
+        algorithm and regularization strength. And I'm testing the hypothesis
+        that only when the overseer failure rate exceeds a certain threshold
+        (the failure tolerance of a particular configuration) does the overall
+        failure rate blow up. These hypotheses should hold independent of the
+        learning algorithm used.
+\end{itemize}
+
+To be continued.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
