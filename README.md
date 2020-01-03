@@ -6,21 +6,22 @@ Project definition (CoR):
 
 ```
 I'm studying the impact of overseer failure on RL-based IDA,
-    because I want to know under what conditions the amplification increases or
-    decreases the failure rate,
-        in order to help my reader understand whether we need to combine
-        capability amplification with explicit reliability amplification in all
-        cases.
+    because I want to know under what conditions amplification and distillation
+    increase or decrease the failure rate,
+        in order to help my reader understand whether explicit reliability
+        amplification is necessary for IDA to work in practice.
 ```
 
 In this project I will:
 
 1. Take the implementation of iterated distillation and amplification from
    Christiano et al.'s [‘Supervising strong learners by amplifying weak
-   experts’](https://arxiv.org/abs/1810.08575) and adapt it to reinforcement
-   learning. (It is using supervised learning now.)
-2. Introduce overseer failures and see how they influence the overall failure
-   rate.
+   experts’](https://arxiv.org/abs/1810.08575), introduce overseer failures and
+   see how they influence the overall failure rate.
+2. Adapt the system to reinforcement learning. (It uses supervised learning
+   now.)
+2. Introduce overseer failures in the RL setting and see how they influence the
+   overall failure rate.
 3. Write a paper about the results.
 
 [Overseer failures in SupAmp and ReAmp](overfail2.pdf) contains a more extensive
@@ -37,8 +38,10 @@ introduction, as well as an explanation of the relevant terms, concepts etc.
   all the information I need for planning a draft of the paper.
 - [Literature overview](literature.pdf) – Work in progress of searching,
   skimming, filtering, summarizing literature for this project.
-- [Project outline](farlamp-plan.pdf) – Overview of iterations, tasks,
-  estimates, deadlines and status.
+- [Project outline](farlamp-omniplan.pdf) – Overview of iterations, tasks,
+  estimates, deadlines and status. I outline only the tasks for the next
+  milestone completely. The duration estimates are actually ranges, but OmniPlan
+  exports them as scalars.
 
 There are more files, but they are only useful for me. The code won't be
 published here, because it will be based on the code from CSASupAmp, which
