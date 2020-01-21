@@ -29,15 +29,21 @@
 % \IfFileExists{upquote.sty}{\RequirePackage{upquote}}{}
 
 \hypersetup{
-  pdftitle={Analysis: How to turn SupAmp into ReAmp?},
-  pdfauthor={Richard Möhn},
   pdflang={en-GB},
   colorlinks=true,
   linkcolor=Maroon,
   filecolor=Maroon,
   citecolor=Blue,
-  urlcolor=Blue,
-  pdfcreator={LaTeX via pandoc}}
+  urlcolor=Blue}
+
+\newcommand*{\addtitledatatopdf}{%
+    \makeatletter
+    \hypersetup{%
+        pdftitle={\@title},
+        pdfauthor={\@author},
+    }
+    \makeatother
+}
 
 \urlstyle{same} % disable monospaced font for URLs
 
