@@ -15,9 +15,64 @@
 \maketitle
 \tableofcontents
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+
+- To get a feeling for what is going on.
+- And solve problems with the code with a short feedback loop. → Without having
+to deal with big data, long training times and working in the cloud.
+- Ran experiments with a tiny model on easy tasks.
+- Still found results that are useful, because they open questions for further
+research. See \OQ and \TODO markers.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Method}
+
+- SupAmp on permutation powering.
+- Tiny model. Means a one-layer transformer for both H' and X, if I understand
+correctly.
+- Permutation of four numbers, power up to seven.
+- Train for 4000 steps, that is 4000 batches à 50 contexts with 4 questions each
+to train X. However many steps the other threads got done in parallel.
+- Then the same with $p_f \in {0.01, 0.1, 0.3, 1.0}$.
+- Each of these three times.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Observations and discussion}
+
+- Put these in one section, because this is an informal report and the
+observations are handwaving in a way not suited to a pure observations section.
+
+\subsection{Without errors}
+
+- Low variance with a given configuration
+- Learning curves with pf = 0 without surprises
+- Train and validate remarkably close
+- Smoothness of teacher learning curves
+
+
+\subsection{With errors injected}
+
+- Final accuracies and theoretical predictions
+- Even pf = 0.01 lowers accuracy
+- acc_on/2/teacher higher.
+- What does it do differently?
+(When it's short, put it in a misc section.)
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Points to improve}
+
+- performance
+- length of training/checkpointing
 
 
 \end{document}
+
+Material collection
+-------------------
 
 - What hyperparameters?
 
@@ -65,6 +120,7 @@ because of Polyak averaging.
     data.
 
 - performance conclusions see case 72
+- need to train for longer/add checkpointing
 
 - How do the model errors come about, though? The training data contain randomly
 wrong inputs. What does the model learn to do differently when it receives
