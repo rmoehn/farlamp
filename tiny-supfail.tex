@@ -1,0 +1,71 @@
+\documentclass{farlamp}
+
+% latexmk -pvc -pdfxe -bibtex -interaction=nonstopmode -outdir=build tiny-supfail.tex
+
+\addbibresource{references.bib}
+
+\subject{Report}
+\title{Training a tiny SupAmp model on easy tasks}
+\subtitle{The influence of failure rate on learning curves}
+\author{Richard Möhn}
+\date{\today}
+\addtitledatatopdf
+
+\begin{document}
+\maketitle
+\tableofcontents
+
+
+
+\end{document}
+
+- What hyperparameters?
+
+- observations
+    - low variance between learning curves for same hyperparameters → need to
+    look at only one trial per configuration
+    - all accuracies approach 1 quickly and without detours
+    - behaviour makes sense/almost nothing surprising
+        - first H' up to about 0.9, then on/2
+        - first on/2 up, then on/3, /targets in between
+    - train/validate are rather close
+
+- The teacher learning curves look smoother than the others. This might be
+because of Polyak averaging.
+
+- observations with pf = 0
+
+- expected final accuracies at pf = 0.01, 0.1, 0.3, 1.0
+    - compared to actual final accuracies
+- Why is acc_on/3 less than predicted theoretically?
+    - Perhaps not trained to convergence.
+- Even with pf = 0.01 the model doesn't get trained to overlook the errors.
+    - Small evidence against the main hypothesis. – Would expect that the
+    threshold is above 0.01, yet we do get the errors.
+    - Might just be that the model has too great capacity/we're not regularizing
+    enough.
+    → Hypothesis: If I turn up regularization, the accuracies will rise. To a
+    point where they don't fall exponentially in the question class/height
+    anymore.
+    - Of course, at some point the model can't be trained anymore. The error
+    probability needs to be low enough that it can be countered with
+    regularization weak enough as to not prevent learning.
+
+- → X learns all the mistakes that H' makes
+
+- The acc_on/2/teacher are higher than the acc_on/2/targets.
+    - Can't say anything about acc_on/3/*, because training hadn't fully
+    converged.
+    - Is it because Polyak averaging acts as regularization?
+
+- Training and validation curves are remarkably close.
+    - Are the validation data not good enough? Too similar to the already
+    trained data?
+    - Maybe barely any overfitting, because there are always random new training
+    data.
+
+- performance conclusions see case 72
+
+- How do the model errors come about, though? The training data contain randomly
+wrong inputs. What does the model learn to do differently when it receives
+randomly wrong inputs?
