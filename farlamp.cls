@@ -54,8 +54,10 @@
 
 % Credits: https://en.wikibooks.org/wiki/LaTeX/Footnotes_and_Margin_Notes#Margin_Notes
 \RequirePackage{marginnote}
-\newcommand*{\OQ}{\marginnote{\textsc{oq}}}
-\newcommand*{\TODO}{\marginnote{\textsc{todo}}}
+\newcommand*{\OQsymbol}{\textsc{oq}}
+\newcommand*{\OQ}{\marginnote{\OQsymbol}}
+\newcommand*{\TODOsymbol}{\textsc{todo}}
+\newcommand*{\TODO}{\marginnote{\TODOsymbol}}
 
 % Because ✔ isn't getting printed and it's taking me too long to make it work.
 \newcommand*{\done}{\textsc{done}}
@@ -74,6 +76,7 @@
 \newcommand*{\Response}{\textit{Response:}}
 \newcommand*{\HX}[1]{\ensuremath{\mathit{HX^{#1}}}}
 \newcommand*{\X}[1]{\ensuremath{\mathit{X^{#1}}}}
+\newcommand*{\Xpa}{\ensuremath{\mathit{X_{\text{\textsc{pa}}}}}}
 \newcommand*{\code}[1]{\texttt{#1}}
 
 \DeclareMathOperator{\Amplify}{Amplify}
