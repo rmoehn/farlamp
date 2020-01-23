@@ -16,9 +16,12 @@
 \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
 
 \PassOptionsToPackage{}{xcolor}
-%
 \RequirePackage{lmodern}
 \RequirePackage{amsmath}
+\RequirePackage{tabulary}
+\RequirePackage{array}
+\RequirePackage{graphicx}
+\DeclareGraphicsExtensions{.png}
 
 \RequirePackage[]{microtype}
 \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
@@ -72,7 +75,7 @@
 \newcommand*{\zkref}[1]{\ignorespaces}
 
 \newcommand*{\task}[1]{#1}
-\newcommand*{\Term}[1]{\textbf{#1}}
+\newcommand*{\Term}[1]{\underline{#1}}
 \newcommand*{\Response}{\textit{Response:}}
 \newcommand*{\HX}[1]{\ensuremath{\mathit{HX^{#1}}}}
 \newcommand*{\X}[1]{\ensuremath{\mathit{X^{#1}}}}
@@ -80,6 +83,12 @@
 \newcommand*{\code}[1]{\texttt{#1}}
 
 \DeclareMathOperator{\Amplify}{Amplify}
+\newcommand*{\AmpHp}{\ensuremath{\Amplify^{H'}\!\!(\Xpa)}}
+
+\newcommand*{\Overfail}{\href{https://github.com/rmoehn/farlamp/blob/master/overfail2.pdf}{Overseer
+failures in SupAmp and ReAmp}}
+\newcommand*{\Obs}{\paragraph{Observation}}
+\newcommand*{\Disc}{\paragraph{Discussion}}
 
 \newcommand*{\blx@nowarnpolyglossia}{\relax}
 
