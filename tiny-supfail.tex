@@ -43,7 +43,9 @@ experiments.
 
 In this report I quickly note and discuss the methods, observations and lessons
 learned before I move on. ‘Quickly’ also means that you have to content yourself
-with screenshots of TensorBoard instead of pretty plots.
+with screenshots of TensorBoard instead of pretty plots. Please excuse the
+unpolished prose and other rough edges – I had to move on and start preparing
+for my AISC interview.
 
 % TODO: Mention the striking result and my having made mistakes.
 
@@ -147,6 +149,7 @@ otherwise noted.
 
 \subsection{Without failures ($p_F = 0$)}
 
+\begin{LCRow}
 % LC [r"accuracy/asker/[aq]/validation"]
 % {"trials": r"iterate/0/.*"}
 \LearningCurve{pf0-all-asker-select}
@@ -156,6 +159,7 @@ otherwise noted.
 % LC [r"accuracy.*/teacher"]
 % {"trials": r"iterate/0/.*"}
 \LearningCurve{pf0-all-teacher-all}
+\end{LCRow}
 
 \Obs The learning curves for all three trials are similar, the variation between
 trials is low.
@@ -165,12 +169,14 @@ trials is low.
 
 \Disc This allows me to select only the first trial for further analysis.
 
+\begin{LCRow}
 % LC [r"accuracy/asker/q/.*"]
 % {"smoothing": 0.0}
 \LearningCurve{asker-bouncing-q}
 % LC [r"accuracy/asker/a/.*"]
 % {"smoothing": 0.0}
 \LearningCurve{asker-bouncing-a}
+\end{LCRow}
 
 \Obs (Smoothing turned off.) The accuracy of $H'$ bounces around in the
 beginning.
@@ -178,10 +184,12 @@ beginning.
 batches, much more seldom than the other accuracies. The bouncing is no problem,
 since $H'$ reaches perfect accuracy quickly.
 
+\begin{LCRow}
 % LC [r"accuracy/asker/a/validation", r"accuracy.*/targets"]
 \LearningCurve{pf0-asker-a-validation-targets-all}
 % LC [r"accuracy/(train|targets|teacher)"]
 \LearningCurve{pf0-student-validation-targets-total-teacher-total}
+\end{LCRow}
 
 \Obs $H'$ reaches accuracy 1.0 quickest, then \AmpHp\ on depth-2 questions.
 Thereafter, \AmpHp\ on depth-3 questions and on all questions almost reach 1.0
@@ -200,12 +208,14 @@ accuracy on all answers is in between.
 \AmpHp\ delivers the training data for $X$ and \Xpa\ is derived from $X$. This
 explains the respective lags.
 
+\begin{LCRow}
 % LC [r"accuracy/asker/a/.*"]
 \LearningCurve{pf0-asker-a-all}
 % LC [r"accuracy/asker/q/.*"]
 \LearningCurve{pf0-asker-q-all}
 % LC [r"accuracy/(train|validation)"]
 \LearningCurve{pf0-student-all}
+\end{LCRow}
 
 \Obs Training and validation accuracy curves are remarkably close both
 for $X$ and $H'$.
@@ -216,12 +226,14 @@ are too similar to the already trained data and therefore not good enough. This
 might be because the domains are too small. Or perhaps the learners barely
 overfit, because the training data are always random and new.
 
+\begin{LCRow}
 % LC [r"accuracy.*/targets"]
 \LearningCurve{pf0-targets-all}
 % LC [r"accuracy.*/teacher"]
 \LearningCurve{pf0-teacher-all}
 % LC [r"accuracy/(validation|teacher)"]
 \LearningCurve{pf0-student-validation-teacher-total}
+\end{LCRow}
 
 \Obs The learning curves of \Xpa\ are smoother than those of \AmpHp and $X$.
 
@@ -230,10 +242,14 @@ the weights of the last 1000 steps. This biases the predictions to be similar to
 the predictions during the last 1000 steps, and therefore reduces the variance
 in the accuracy.
 
+\begin{LCRow}
 % LC [r"asker/a/validation", r"accuracy_on/[23]/targets"]
+% {"zoom": True}
 \LearningCurve{dip-asker-23targets}
 % LC [r"accuracy/targets", r"accuracy/train", r"accuracy/teacher"]
+% {"zoom": True}
 \LearningCurve{dip-targets-answerer-teacher}
+\end{LCRow}
 
 \Obs At the beginning of the training \AmpHp, $X$ and \Xpa, in
 this order, go through a section of less-than-chance accuracy. (The accuracy of
@@ -261,6 +277,7 @@ experiments. So I will only note and discuss the few valid observations that are
 left.
 % See the bottom of the file for what I'd written.
 
+\begin{LCRow}
 % LC [r"accuracy/targets"]
 % {"trials": r"iterate/0\.(01|1|3)"}
 \LearningCurve{pfg0-all-targets-all}
@@ -269,17 +286,20 @@ left.
 \LearningCurve{pfg0-all-teacher-all}
 \Obs Also here the results for equal configurations are almost the same.
 \Disc I will only include the first trial of each configuration.
+\end{LCRow}
 
 % LC [r"accuracy/teacher"]
 % {"trials": r"iterate/1\..*"}
 \LearningCurve{pf1-teacher}
-\Obs The accuracy for $p_F = 1.0$ stays at $\frac{1}{N_a}$ for the whole
+\Obs The accuracy for $p_F = 1.0$ stays around $\frac{1}{N_a}$ for the whole
 training.
+TODO: Higher acc in the beginning.
 \Disc This is not surprising. $p_F = 1.0$ means that the training data are
 random. With random training data it is impossible to achieve better-than-chance
 accuracy. Therefore, I will leave the training curve for this case out of the
 discussion.
 
+\begin{LCRow}
 % LC [r"accuracy/teacher"]
 % {"trials": r"iterate/0.*/0/.*"}
 \LearningCurve{pf-all-rise}
@@ -288,10 +308,14 @@ same time. Only the invisible ceiling that they hit differs.
 \Disc This observations appears rather uninteresting. But at least it shows that
 in this configuration the injected failures only influence the attainable
 accuracy and don't destabilize the training.
+\end{LCRow}
 
+\begin{LCRow}
 % LC [r"accuracy_on/2/(targets|teacher)"]
-% {"trials": r"iterate/0\.(01|1|3)/0/.*"}
+% {"trials": r"iterate/0\.(01|1|3)/0/.*", "zoom": True}
 \LearningCurve{xpa-surpasses}
+\end{LCRow}
+
 \Obs The accuracy of \AmpHp\ on depth-2 questions matches the theoretically
 calculated accuracy. The accuracy of \Xpa\ surpasses it in all remaining settings
 of $p_F$.
@@ -311,9 +335,12 @@ compensate for some of the failures introduced in the amplification.
 % I'm not completely sure whether it actually supports the hypothesis, though. –
 % When training data contain failures with probability $p_F$.
 
+\begin{LCRow}
 % LC [r"accuracy_on/2/teacher"]
 % {"trials": r"iterate/(0|0.01)/0/.*"}
-\LearningCurve{imperfect-0.01}
+\LearningCurve{imperfect-0_01}
+\end{LCRow}
+
 \Obs With $p_F = 0.01$, the final accuracy of \Xpa\ on depth-2 questions is
 0.9972 (according to TensorBoard, with the smoothing parameter set to 0.6). This
 is lower than 0.9997 when $p_F = 0$.

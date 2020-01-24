@@ -71,6 +71,12 @@
 \newtheorem{example}{Example}[section]
 \newtheorem{definition}{Definition}[section]
 
+\newenvironment*{LCRow}{%
+    \vspace{\baselineskip}\noindent
+}{}
+\newcommand*{\LearningCurve}[1]{\includegraphics[width=0.33\textwidth]{#1}}
+% \newcommand*{\LearningCurve}[1]{\noindent\texttt{#1}\newline}
+
 % Credits: https://tex.stackexchange.com/a/44062/195421
 \newcommand*{\zkref}[1]{\ignorespaces}
 
@@ -87,8 +93,22 @@
 
 \newcommand*{\Overfail}{\href{https://github.com/rmoehn/farlamp/blob/master/overfail2.pdf}{Overseer
 failures in SupAmp and ReAmp}}
-\newcommand*{\Obs}{\paragraph{Observation}}
-\newcommand*{\Disc}{\paragraph{Discussion}}
+
+% \DeclareSectionCommand[%
+%     afterskip=-1em,
+%     beforeskip=3.25ex plus 1ex minus .2ex, afterskip=-1em,
+%     level=4,
+%     indent=0pt,
+%     font={\scfamily},
+%     tocindent=7em,
+%     tocnumwidth=4.1em,
+%     toclevel=4,
+%     tocstyle=section,
+%     counterwithin=subsubsection
+% ]{picparagraph}
+
+\newcommand*{\Obs}{\vspace{-\baselineskip}\paragraph{Observation}}
+\newcommand*{\Disc}{\vspace{-\baselineskip}\paragraph{Discussion}}
 
 \newcommand*{\blx@nowarnpolyglossia}{\relax}
 
