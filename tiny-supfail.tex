@@ -33,19 +33,19 @@ training times and local execution allow for a tight feedback loop with few
 moving parts. Thus I could understand and adapt the code, and fix mistakes
 quickly.
 
-The drawback is that it doesn't yield many insights. One result, however, was
-encouraging: \Xpa\ does learn to be more reliable than its overseer \AmpHp. The
-rest of the results fall into two categories: Results confirming my
-understanding of the code and learning behaviour. And results made useless by
-mistakes and misunderstanding of mine. Although the latter sounds bad, it is
-actually useful to have exposed these mistakes before running more expensive
-experiments.
+The drawback is that it doesn't yield many insights. One result
+(\hyperlink{interesting}{click to jump there}), however, was encouraging: \Xpa\
+does learn to be more reliable than its overseer \AmpHp. The rest of the results
+fall into two categories: Results confirming my understanding of the code and
+learning behaviour. And results made useless by mistakes and misunderstanding of
+mine. Although the latter sounds bad, it is actually useful to have exposed
+these mistakes before running more expensive experiments.
 
 In this report I quickly note and discuss the methods, observations and lessons
 learned before I move on. ‘Quickly’ also means that you have to content yourself
 with screenshots of TensorBoard instead of pretty plots. Please excuse the
 unpolished prose and other rough edges – I had to move on and start preparing
-for my AISC interview.
+for my \textsc{Aisc} interview.
 
 % TODO: Mention the striking result and my having made mistakes.
 
@@ -145,7 +145,7 @@ configuration:
 \section{Observations and discussion}
 
 In the following screenshots from TensorBoard the smoothing factor is 0.6 unless
-otherwise noted.
+noted otherwise.
 
 \subsection{Without failures ($p_F = 0$)}
 
@@ -180,7 +180,7 @@ trials is low.
 
 \Obs (Smoothing turned off.) The accuracy of $H'$ bounces around in the
 beginning.
-\Disc I don't know why. One reason is that it is measured only every fifty
+\Disc \OQ{}I don't know why. One reason is that it is measured only every fifty
 batches, much more seldom than the other accuracies. The bouncing is no problem,
 since $H'$ reaches perfect accuracy quickly.
 
@@ -191,21 +191,20 @@ since $H'$ reaches perfect accuracy quickly.
 \LearningCurve{pf0-student-validation-targets-total-teacher-total}
 \end{LCRow}
 
-\Obs $H'$ reaches accuracy 1.0 quickest, then \AmpHp\ on depth-2 questions.
-Thereafter, \AmpHp\ on depth-3 questions and on all questions almost reach 1.0
-together. The accuracy of $X$ lags behind \AmpHp, and the accuracy of \Xpa\ lags
-behind that of $X$.
+\Obs $H'$ reaches 1.0 quickest (talking about accuracy), then \AmpHp\ on depth-2
+questions. Thereafter, \AmpHp\ on depth-3 questions and on all questions reach
+1.0 at the same time. $X$ lags behind \AmpHp, and \Xpa\ lags behind $X$.
 
 \Disc This is what I roughly expected. These accuracies all depend on each
 other. $H'$ needs to become good enough for the amplification to generate
-sensible training data for $X$. At first the only correct answers \AmpHp\ gets
-are those to depth-1 questions. With the answers to depth-1 questions, \AmpHp\
-can answer depth-2 question, which is the next accuracy that goes up. Once
-depth-2 answers hit the mark often enough, the training for depth-3 answers
-becomes effective. Depth-2 and depth-3 answers make up all answers, so the
-accuracy on all answers is in between.
+sensible training data for $X$. At first the only correct inputs \AmpHp\ gets
+are answers to depth-1 (ie. primitive) questions. With the answers to depth-1
+questions, \AmpHp\ can answer depth-2 questions, which is the next accuracy that
+goes up. Once depth-2 answers hit the mark often enough, the training for
+depth-3 answers becomes effective. Depth-2 and depth-3 answers make up all
+answers, so the accuracy on all answers is in between.
 
-\AmpHp\ delivers the training data for $X$ and \Xpa\ is derived from $X$. This
+\AmpHp\ delivers the training data for $X$, and \Xpa\ is derived from $X$. This
 explains the respective lags.
 
 \begin{LCRow}
@@ -257,20 +256,19 @@ random outputs would be $\frac{1}{N_a}$.)
 % Include pictures of the appropriate learning curves.
 
 \Disc I don't know why this happens. \OQ It might have to do with $H'$ not being
-fully trained and with the special response ‘I don't know’, which is give
-non-randomly. It is not important now to find out. - Might be that it is only
-outputting ‘I don't know’ in the beginning instead of random values.
-
+fully trained, or with the special response ‘I don't know’, which is given
+non-randomly. It is not important to find out now.
 
 \subsection{With failures injected ($p_F > 0$)}
 
-Unfortunately I made two mistakes: I let the training run for too few steps,
-stopping it before it converged for depth-3 questions. This means that the
+Unfortunately I made two mistakes: I let the trials run for too few steps,
+stopping it before training converged for depth-3 questions. This means that the
 accuracy numbers of \Xpa\ for these are almost useless. And I was confused about
 the injecting of errors, putting it in the wrong place or measuring accuracy
-wrongly or calculating the theoretical accuracy wrongly. Or all of these
-together; I haven't decided how to best resolve the issue. The result is that
-the accuracy numbers of \AmpHp\ on depth-3 questions are almost useless as well.
+wrongly or calculating the theoretical accuracy wrongly – or all of these
+together. \TODO{}I haven't decided yet how to resolve the issue. The result is
+that the accuracy numbers of \AmpHp\ on depth-3 questions are almost useless as
+well.
 
 For now I don't have time to clarify my thoughts, fix the code and rerun the
 experiments. So I will only note and discuss the few valid observations that are
@@ -288,16 +286,19 @@ left.
 \Disc I will only include the first trial of each configuration.
 \end{LCRow}
 
+\begin{LCRow}
 % LC [r"accuracy/teacher"]
 % {"trials": r"iterate/1\..*"}
 \LearningCurve{pf1-teacher}
-\Obs The accuracy for $p_F = 1.0$ stays around $\frac{1}{N_a}$ for the whole
-training.
-TODO: Higher acc in the beginning.
-\Disc This is not surprising. $p_F = 1.0$ means that the training data are
-random. With random training data it is impossible to achieve better-than-chance
-accuracy. Therefore, I will leave the training curve for this case out of the
-discussion.
+\end{LCRow}
+\Obs The accuracy for $p_F = 1.0$ starts at slightly better than chance, then
+goes down to as good as chance.
+\Disc Ending at as-good-as-chance is not surprising. $p_F = 1.0$ means that the
+training data are random. With random training data it is impossible to achieve
+better-than-chance accuracy. \OQ{}The start at a higher accuracy probably has to
+do with ‘I don't know’ responses. I don't want to take time now to understand it
+completely. And I will leave the training curve for $p_F = 1.0$ out of the
+further discussion.
 
 \begin{LCRow}
 % LC [r"accuracy/teacher"]
@@ -310,6 +311,7 @@ in this configuration the injected failures only influence the attainable
 accuracy and don't destabilize the training.
 \end{LCRow}
 
+\hypertarget{interesting}{}
 \begin{LCRow}
 % LC [r"accuracy_on/2/(targets|teacher)"]
 % {"trials": r"iterate/0\.(01|1|3)/0/.*", "zoom": True}
@@ -324,13 +326,17 @@ of $p_F$.
 receives correct inputs (sub-answers to primitve questions) and only its outputs
 get laced with randomness. There is nothing between the mechanism that injects
 randomness and the accuracy measurement. Therefore the measured accuracy must
-match what one would theoretically calculated, given the error injection
+match what one would theoretically calculate, given the error injection
 mechanism.
 
-The latter observation, however, is striking. (Perhaps the only worthwhile fact
-in this report.) \Xpa\ achieves a higher accuracy than \AmpHp, from which its
-training data come. This supports my hypothesis that the distillation can
-compensate for some of the failures introduced in the amplification.
+\hypertarget{bla}{The latter observation}, however, is striking.
+(Perhaps the only worthwhile fact in this report.) \Xpa\ achieves a higher
+accuracy than \AmpHp, from which its training data come. This supports my
+hypothesis that regularization in the distillation step can compensate for some
+of the failures introduced in the amplification. (What regularization? SupAmp
+uses Dropout, batch normalization and layer normalization \parencite{CSASupAmp}.
+Polyak averaging as a quasi-ensemble method \parencite{BrowPolyakAvg} probably
+acts as a regularizer as well.)
 
 % I'm not completely sure whether it actually supports the hypothesis, though. –
 % When training data contain failures with probability $p_F$.
@@ -353,7 +359,7 @@ more regularization.
 The hypothesis that more regularization leads to a greater failure tolerance,
 can be tested. \TODO For example, one could increase the dropout probability
 (currently 0.1) and see if the accuracy rises back to $p_F = 0$ levels. Of
-course the higher $p_F$, the harder it will be to find a dropout rate that
+course, the higher $p_F$, the harder it will be to find a dropout rate that
 regularizes away faulty inputs while still allowing learning progress.
 
 
@@ -364,23 +370,24 @@ regularizes away faulty inputs while still allowing learning progress.
 
 I noted above that not all learners converged within the 4000 steps that each
 trial ran for. In order to ensure convergence and avoid useless results, I could
-increase the number of training steps indiscriminately. Better would be to have
-the weights saved at the end of training, or even at regular checkpoints. This
-will be vital if I move the training to AWS Spot instances, which I'm
-considering.
+increase the number of training steps indiscriminately.\TODO\ Better would be to
+have the weights saved at the end of training, or even at regular checkpoints,
+so that not-yet-converged trials can be continued. This will be vital if I move
+the training to \textsc{Aws} Spot instances, which I'm considering.
 
 
 \subsection{Performance}
 
 Much computation is wasted: Measuring code is run frequently, often at every
 batch. And a large part of it runs in Python or NumPy space, rather than more
-optimized TensorFlow space. $H'$ reaches perfect accuracy within the first 1000
-steps ($X$ training steps), but keeps getting trained at full speed. $X$ reaches
-perfect accuracy on each successive question depth, yet questions of all depths
-continue being sampled uniformly. (The latter might be different when curriculum
-learning is turned on.) One should be able to reduce training time by
-concentrating ressources where they're needed.
+optimized TensorFlow space. $H'$ reaches perfect accuracy within the time it
+takes $X$ to complete 1000 training steps, but keeps getting trained at full
+speed. $X$ reaches perfect accuracy on each successive question depth, yet
+questions of all depths continue being sampled uniformly. (The latter might be
+different when curriculum learning is turned on.) One should be able to reduce
+training time by concentrating ressources where they're needed.
 
+\printbibliography
 
 \end{document}
 
