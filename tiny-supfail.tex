@@ -147,35 +147,52 @@ otherwise noted.
 
 \subsection{Without failures ($p_F = 0$)}
 
-\includegraphics[width=0.33\textwidth]{pf0-asker-all}
-\includegraphics[width=0.33\textwidth]{pf0-targets-all}
-\includegraphics[width=0.33\textwidth]{pf0-teacher-all}
+% LC [r"asker/.*"]
+% {"trials": r"iterate/0/.*"}
+\LearningCurve{pf0-all-asker-all}
+% LC [r"targets"]
+% {"trials": r"iterate/0/.*"}
+\LearningCurve{pf0-all-targets-all}
+% LC [r"teacher"]
+% {"trials": r"iterate/0/.*"}
+\LearningCurve{pf0-all-teacher-all}
 
-\Obs Given a configuration, the learning curves for all three trials are
-similar, the variation between trials is low.
+\Obs The learning curves for all three trials are similar, the variation between
+trials is low.
 % Include picture of H' and train learning curves for pf = 0 and 0.3.
 % When I include pictures, make the names generic, so that I can replace them as
 % needed.
 
-\Disc This allows me to select only the first trial of each configuration
-for further analysis.
+\Disc This allows me to select only the first trial for further analysis.
 
-\Obs $H'$ reaches accuracy 1.0 quickest, then \AmpHp\ on depth-2
-questions. Thereafter, \AmpHp\ on depth-3 questions and on all questions almost
-reach 1.0 together. Finally, \Xpa\ catches up. The accuracy of $X$ lags behind
-\AmpHp, and the accuracy of \Xpa\ lags behind that of $X$.
+% LC [r"asker/a/validation", r"targets"]
+\LearningCurve{pf0-asker-a-validation-targets-all}
+% LC [r"accuracy/(train|targets|teacher)"]
+\LearningCurve{pf0-student-validation-targets-total-teacher-total}
+
+\Obs $H'$ reaches accuracy 1.0 quickest, then \AmpHp\ on depth-2 questions.
+Thereafter, \AmpHp\ on depth-3 questions and on all questions almost reach 1.0
+together. The accuracy of $X$ lags behind \AmpHp, and the accuracy of \Xpa\ lags
+behind that of $X$.
 
 \Disc This is what I roughly expected. These accuracies all depend on each
-other. $H'$ needs to become good enough to generate sensible training data for
-$X$. At first the only correct answers \AmpHp\ gets are those to depth-1
-questions. With the answers to depth-1 questions, \AmpHp\ can answer depth-2
-question, which is the next accuracy that goes up. Once depth-2 answers hit the
-mark often enough, the training for depth-3 answers becomes effective. Depth-2
-and depth-3 answers make up all answers, so the accuracy on all answers is in
-between.
+other. $H'$ needs to become good enough for the amplification to generate
+sensible training data for $X$. At first the only correct answers \AmpHp\ gets
+are those to depth-1 questions. With the answers to depth-1 questions, \AmpHp\
+can answer depth-2 question, which is the next accuracy that goes up. Once
+depth-2 answers hit the mark often enough, the training for depth-3 answers
+becomes effective. Depth-2 and depth-3 answers make up all answers, so the
+accuracy on all answers is in between.
 
 \AmpHp\ delivers the training data for $X$ and \Xpa\ is derived from $X$. This
 explains the respective lags.
+
+% LC [r"asker/a/.*"]
+\LearningCurve{pf0-asker-a-all}
+% LC [r"asker/q/.*"]
+\LearningCurve{pf0-asker-q-all}
+% LC [r"accuracy/(train|validation)"]
+\LearningCurve{pf0-student-all}
 
 \Obs Training and validation accuracy curves are remarkably close both
 for $X$ and $H'$.
@@ -186,32 +203,37 @@ are too similar to the already trained data and therefore not good enough. This
 might be because the domains are too small. Or perhaps the learners barely
 overfit, because the training data are always random and new.
 
-\Obs The learning curves of \Xpa\ are smoother than those of \AmpHp.
-% Include pictures of the mentioned learning curves.
-% \begin{picrow}
-%     \pic{acc*/targets}
-%     \pic{acc*/teacher}
-% \end{picrow}
+% LC [r"targets"]
+\LearningCurve{pf0-targets-all}
+% LC [r"teacher"]
+\LearningCurve{pf0-teacher-all}
+% LC [r"accuracy/(validation|teacher)"]
+\LearningCurve{pf0-student-validation-teacher-total}
+
+\Obs The learning curves of \Xpa\ are smoother than those of \AmpHp and $X$.
 
 \Disc I guess that this is because of the Polyak averaging. It averages
 the weights of the last 1000 steps. This biases the predictions to be similar to
 the predictions during the last 1000 steps, and therefore reduces the variance
 in the accuracy.
 
-\Obs At the beginning of the training the accuracy of \AmpHp\ and \Xpa\
-dips below the initial and expected $\frac{1}{N_a}$. This is subtle, but occurs
-in all three runs.
+% LC [r"asker/a/validation", r"[23]/targets"]
+\LearningCurve{dip-asker-23targets}
+% LC [r"accuracy/targets", r"accuracy/train", r"accuracy/teacher"]
+\LearningCurve{dip-targets-answerer-teacher}
+
+\Obs At the beginning of the training \AmpHp, $X$ and \Xpa, in
+this order, go through a section of less-than-chance accuracy. (The accuracy of
+random outputs would be $\frac{1}{N_a}$.)
 % Include pictures of the appropriate learning curves.
 
-\Disc I don't know why this happens. \OQ It is not important now to find
-out.
+\Disc I don't know why this happens. \OQ It might have to do with $H'$ not being
+fully trained and with the special response ‘I don't know’, which is give
+non-randomly. It is not important now to find out. - Might be that it is only
+outputting ‘I don't know’ in the beginning instead of random values.
 
 
 \subsection{With failures injected ($p_F > 0$)}
-
-Also here the learning curves I will only include the first trial of each
-configuration, because the results for the same configuration are almost the
-same.
 
 Unfortunately I made two mistakes: I let the training run for too few steps,
 stopping it before it converged for depth-3 questions. This means that the
@@ -226,6 +248,18 @@ experiments. So I will only note and discuss the few valid observations that are
 left.
 % See the bottom of the file for what I'd written.
 
+% LC [r"targets"]
+% {"trials": r"iterate/0\..*"}
+\LearningCurve{pfg0-all-targets-all}
+% LC [r"teacher"]
+% {"trials": r"iterate/0\..*"}
+\LearningCurve{pfg0-all-teacher-all}
+\Obs Also here the results for equal configurations are almost the same.
+\Disc I will only include the first trial of each configuration.
+
+% LC [r"accuracy/teacher"]
+% {"trials": r"iterate/1\..*"}
+\LearningCurve{pf1-teacher}
 \Obs The accuracy for $p_F = 1.0$ stays at $\frac{1}{N_a}$ for the whole
 training.
 \Disc This is not surprising. $p_F = 1.0$ means that the training data are
@@ -233,12 +267,16 @@ random. With random training data it is impossible to achieve better-than-chance
 accuracy. Therefore, I will leave the training curve for this case out of the
 discussion.
 
+% LC [r"accuracy/teacher"]
+% {"trials": r"iterate/0.*/0/.*"}
 \Obs The learning curves for all $p_F$, including $p_F = 0$ rise at about the
 same time. Only the invisible ceiling that they hit differs.
 \Disc This observations appears rather uninteresting. But at least it shows that
 in this configuration the injected failures only influence the attainable
 accuracy and don't destabilize the training.
 
+% LC [r"on/2/(targets|teacher)"]
+% {"trials": r"iterate/0\..*/0/.*"}
 \Obs The accuracy of \AmpHp\ on depth-2 questions matches the theoretically
 calculated accuracy. The accuracy of \Xpa\ surpasses it in all remaining settings
 of $p_F$.
@@ -258,6 +296,8 @@ compensate for some of the failures introduced in the amplification.
 % I'm not completely sure whether it actually supports the hypothesis, though. –
 % When training data contain failures with probability $p_F$.
 
+% LC [r"on/2/targets"]
+% {"trials": r"iterate/(0|0.01)/0/.*"}
 \Obs With $p_F = 0.01$, the final accuracy of \Xpa\ is 0.9972 (according to
 TensorBoard, with the smoothing parameter set to 0.6). This is lower than 0.9997
 when $p_F = 0$.
