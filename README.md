@@ -1,6 +1,8 @@
 # Farlamp
 
-BLUF: Read [Overseer failures in SupAmp and ReAmp](overfail2.pdf).
+BLUF: Read [Overseer failures in SupAmp and ReAmp](overfail2.pdf), then the
+interesting parts of [Training a tiny SupAmp model on easy
+tasks](tiny-supfail.pdf).
 
 Project definition (CoR):
 
@@ -32,16 +34,18 @@ introduction, as well as an explanation of the relevant terms, concepts etc.
 
 - [Overseer failures in SupAmp and ReAmp](overfail2.pdf) – Start here. This is
   the most polished document so far.
+- [Training a tiny SupAmp model on easy tasks](tiny-supfail.pdf) – Report on
+  first experiments.
 - [How to turn SupAmp into ReAmp?](supamp-reamp.pdf) – Less detailed and less
   polished analysis of how to approach the first project phase.
 - [What I need for planning the Farlamp draft](draft-basis.pdf) – Will contain
   all the information I need for planning a draft of the paper.
 - [Literature overview](literature.pdf) – Work in progress of searching,
   skimming, filtering, summarizing literature for this project.
-- [Project outline](farlamp-omniplan.pdf) – Overview of iterations, tasks,
-  estimates, deadlines and status. I outline only the tasks for the next
-  milestone completely. The duration estimates are actually ranges, but OmniPlan
-  exports them as scalars.
+- [Current project outline](farlamp-fogbugz-plan.png) – Overview of cases and
+  estimates. Most up to date, but doesn't contain upcoming milestones.
+- [Old project outline](farlamp-omniplan.pdf) – Outdated, but does contain
+  some upcoming milestones.
 
 There are more files, but they are only useful for me. The code won't be
 published here, because it will be based on the code from CSASupAmp, which
