@@ -1,8 +1,8 @@
 # Farlamp
 
-BLUF: Read [Overseer failures in SupAmp and ReAmp](overfail2.pdf), then the
-interesting parts of [Training a tiny SupAmp model on easy
-tasks](tiny-supfail.pdf).
+BLUF: Read [Overseer failures in SupAmp and ReAmp](build/overfail2.pdf), then
+the interesting parts of [Training a tiny SupAmp model on easy
+tasks](build/tiny-supfail.pdf).
 
 Project definition (CoR):
 
@@ -26,21 +26,22 @@ In this project I will:
    overall failure rate.
 3. Write a paper about the results.
 
-[Overseer failures in SupAmp and ReAmp](overfail2.pdf) contains a more extensive
-introduction, as well as an explanation of the relevant terms, concepts etc.
+[Overseer failures in SupAmp and ReAmp](build/overfail2.pdf) contains a more
+extensive introduction, as well as an explanation of the relevant terms,
+concepts etc.
 
 
 ## Repository contents
 
-- [Overseer failures in SupAmp and ReAmp](overfail2.pdf) – Start here. This is
-  the most polished document so far.
-- [Training a tiny SupAmp model on easy tasks](tiny-supfail.pdf) – Report on
-  first experiments.
-- [How to turn SupAmp into ReAmp?](supamp-reamp.pdf) – Less detailed and less
-  polished analysis of how to approach the first project phase.
-- [What I need for planning the Farlamp draft](draft-basis.pdf) – Will contain
-  all the information I need for planning a draft of the paper.
-- [Literature overview](literature.pdf) – Work in progress of searching,
+- [Overseer failures in SupAmp and ReAmp](build/overfail2.pdf) – Start here.
+  This is the most polished document so far.
+- [Training a tiny SupAmp model on easy tasks](build/tiny-supfail.pdf) – Report
+  on first experiments.
+- [How to turn SupAmp into ReAmp?](build/supamp-reamp.pdf) – Less detailed and
+  less polished analysis of how to approach the first project phase.
+- [What I need for planning the Farlamp draft](build/draft-basis.pdf) – Will
+  contain all the information I need for planning a draft of the paper.
+- [Literature overview](build/literature.pdf) – Work in progress of searching,
   skimming, filtering, summarizing literature for this project.
 - [Current project outline](farlamp-fogbugz-plan.png) – Overview of cases and
   estimates. Most up to date, but doesn't contain upcoming milestones.
