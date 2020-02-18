@@ -1,4 +1,6 @@
-build
+!/build
+/build/*
+!/build/*.pdf
 *.csl
 dict.txt
 check.html
