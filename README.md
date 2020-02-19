@@ -30,6 +30,11 @@ In this project I will:
 extensive introduction, as well as an explanation of the relevant terms,
 concepts etc.
 
+For the code see
+[rmoehn/amplification](https://github.com/rmoehn/amplification), which is a fork
+of
+[paulfchristiano/amplification](https://github.com/paulfchristiano/amplification).
+
 
 ## Repository contents
 

@@ -97,6 +97,8 @@ failures in SupAmp and ReAmp}}
 SupAmp into ReAmp?}}
 \newcommand*{\FarlampRepo}{\href{https://github.com/rmoehn/farlamp/}{home page of
 the Farlamp repository}}
+\newcommand*{\AmplificationRepo}{\href{https://github.com/rmoehn/amplification}{GitHub:
+rmoehn/amplification}}
 
 % \DeclareSectionCommand[%
 %     afterskip=-1em,
