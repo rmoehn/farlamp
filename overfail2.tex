@@ -18,9 +18,7 @@
 
 \section{Introduction}
 
-(For a project overview and a glossary, see the
-\href{https://github.com/rmoehn/farlamp}{home page of the Farlamp
-repository.})
+(For a project overview and a glossary, see the \FarlampRepo.)
 
 Capability amplification can cause the failure rate of an ML system to blow up,
 even when the amplified agent fails rarely. To fix this, reliability
@@ -33,9 +31,8 @@ know.~\parencite{ChriRelAmp} But we do need to know in high-stakes situations
 If RL alone is sufficient, we can avoid the computational and design overhead of
 reliability amplification. Therefore, I'm planning to adapt to RL the iterated
 distillation and amplification scheme from \textcite{CSASupAmp}. (See also:
-\href{https://github.com/rmoehn/farlamp/raw/master/supamp-reamp.pdf}{How to turn
-SupAmp into ReAmp?}) Once adapted, I can investigate what overall failure rates
-result from various overseer failure rates and other learning parameters.
+\SupampReamp) Once adapted, I can investigate what overall failure rates result
+from various overseer failure rates and other learning parameters.
 
 In this preliminary analysis I lay out my current understanding of overseer
 failure, related concepts and what I need to do. I will update it and answer

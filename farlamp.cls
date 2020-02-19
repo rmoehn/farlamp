@@ -91,8 +91,12 @@
 \DeclareMathOperator{\Amplify}{Amplify}
 \newcommand*{\AmpHp}{\ensuremath{\Amplify^{H'}\!\!(\Xpa)}}
 
-\newcommand*{\Overfail}{\href{https://github.com/rmoehn/farlamp/blob/master/overfail2.pdf}{Overseer
+\newcommand*{\Overfail}{\href{https://github.com/rmoehn/farlamp/blob/master/build/overfail2.pdf}{Overseer
 failures in SupAmp and ReAmp}}
+\newcommand*{\SupampReamp}{\href{https://github.com/rmoehn/farlamp/blob/master/build/supamp-reamp.pdf}{How to turn
+SupAmp into ReAmp?}}
+\newcommand*{\FarlampRepo}{\href{https://github.com/rmoehn/farlamp/}{home page of
+the Farlamp repository}}
 
 % \DeclareSectionCommand[%
 %     afterskip=-1em,
