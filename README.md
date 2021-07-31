@@ -1,5 +1,9 @@
 # Farlamp
 
+Note 2021-07-31: I decide to leave AI alignment research last year. See
+https://www.lesswrong.com/posts/HDXLTFnSndhpLj2XZ/i-m-leaving-ai-alignment-you-better-stay
+This repo shows the state of my research at the time I left.
+
 BLUF: Read [Overseer failures in SupAmp and ReAmp](build/overfail2.pdf), then
 the interesting parts of [Training a tiny SupAmp model on easy
 tasks](build/tiny-supfail.pdf).
